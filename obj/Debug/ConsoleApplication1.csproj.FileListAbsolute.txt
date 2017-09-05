@@ -1,0 +1,2 @@
+C:\Users\8942\Source\Repos\CS520\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\8942\Source\Repos\CS520\bin\Debug\ConsoleApplication1.exe.config
