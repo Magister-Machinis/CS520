@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using GenericTools;
 
 namespace SimulationCore
 {
@@ -27,6 +28,8 @@ namespace SimulationCore
             bigtimer.Start();
             littletimer.Start();
             Toolkit Tools = new Toolkit();
+            BussRoute route = new BussRoute();
+            int NumberofStops = 16;
             double numberofrounds = 0;
             int frequency = 10; // percent chance that random function will trigger
 

@@ -1,6 +1,6 @@
 ﻿namespace SimulationCore
 {
-    partial class Rider //generic holder for riders and whether they are on a buss or waiting
+    class Rider //generic holder for riders and whether they are on a buss or waiting
     {
         bool riding = false;
 
