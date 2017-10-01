@@ -2,7 +2,7 @@
  * information sources:
  * msdn.microsoft.com
  * tutorialspoint.com
- * 
+ *  https://stackoverflow.com/questions/4892588/rngcryptoserviceprovider-random-number-review (bits and bobs used to build randomeventgenerator)
  * Hosted at:
  * https://github.com/Magister-Machinis/CS520 (amongst my other efforts)
  * 
@@ -19,13 +19,16 @@ namespace SimulationCore
 {
     class Program
     {
+ 
         static void Main(string[] args)
         {
             Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
             Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
             bigtimer.Start();
             littletimer.Start();
+            Toolkit Tools = new Toolkit();
             double numberofrounds = 0;
+            int frequency = 10; // percent chance that random function will trigger
 
             Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             numberofrounds = Convert.ToDouble(Console.ReadLine());
@@ -34,15 +37,22 @@ namespace SimulationCore
             if (numberofrounds == 0)
             {
                 numberofrounds = Convert.ToDouble(littletimer.ElapsedTicks);
-                /* auto-assign simulation length uses the number of ticks it 
+                /* 
+                 * auto-assign simulation length uses the number of ticks it 
                  * takes for the user to decide to use this option as its value, 
-                 * was the fastest truly random value I could think of */
+                 * using crypto grade randomness later for spice
+                 */
             }
             Console.WriteLine("Running " + numberofrounds + " rounds of simulation");
 
-            while (numberofrounds > 0)
+
+            while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
+                if (Tools.Eventgenerator(frequency) == true) //deciding whether to add a new buss to the congaline
+                {
+
+                }
 
             }
             bigtimer.Stop();
