@@ -25,8 +25,8 @@ namespace SimulationCore
 
         public Rider popPassenger(int adder)
         {
-            Rider toppass = passenger[1];
-            passenger.RemoveAt(1);
+            Rider toppass = passenger[0];
+            passenger.RemoveAt(0);
             return toppass;
         }
 

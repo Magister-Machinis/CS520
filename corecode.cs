@@ -29,6 +29,7 @@ namespace SimulationCore
             littletimer.Start();
             Toolkit Tools = new Toolkit();
 
+            List<Buss> bussList = new List<Buss>();
 
             int NumberofStops;
             Console.WriteLine("Input number of stops in the route to be simulated: ");
@@ -59,11 +60,12 @@ namespace SimulationCore
             while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
-                for(int count = 0; count < NumberofStops; count++)
+                for(int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
                 {
                     if(Tools.Eventgenerator(footTraffic) == true)
                     {
-                        route[count].stop.addPassenger(); //still need to flesh out bussstops
+                        Rider anotherone = new Rider();
+                        route[count].stop.addWaiter(anotherone);
                     }
                 }
                 if (Tools.Eventgenerator(frequency) == true) //deciding whether to add a new buss to the congaline
