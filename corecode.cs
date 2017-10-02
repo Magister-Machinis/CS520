@@ -28,9 +28,10 @@ namespace SimulationCore
             bigtimer.Start();
             littletimer.Start();
             Toolkit Tools = new Toolkit();
+            
            
             int NumberofStops = 16;
-            RouteWrapper[] route = BussRoute.Ringify(NumberofStops);
+            BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops);
             double numberofrounds = 0;
             int frequency = 10; // percent chance that random function will trigger
             
