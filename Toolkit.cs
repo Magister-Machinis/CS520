@@ -5,6 +5,10 @@ namespace GenericTools
 {
     public class Toolkit
     {
+        public Toolkit()
+        {
+            Console.WriteLine("Iniitializing instance of toolkit");
+        }
         public bool Eventgenerator(int freq) // using built in cryptographic random # generator to produce true returns 'freq' percentage of the time
         {
             int randomnum = ReallyRandom();

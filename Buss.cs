@@ -1,21 +1,28 @@
-﻿namespace SimulationCore
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+namespace SimulationCore
 {
-    class Buss //generic holder class for the busses
+    class Buss //generic holder class for the busses along with a stack of riders
     {
-        int passenger;
-        public int getPassenger()
+
+
+        List<Rider> passenger;
+        public Rider getPassenger() //views top of rider stack
         {
-            return passenger;
+            return passenger[0];
         }
 
-        public void addPassenger(int adder)
+        public Rider popPassenger(int adder)
         {
-            passenger = passenger + adder;
+            Rider toppass = passenger[1];
+            passenger.RemoveAt(1);
+            return toppass;
         }
 
-        public void setPassener(int newnum)
+        public void stackPassenger(Rider newpass)
         {
-            passenger = newnum;
+            passenger.Add(newpass);
         }
     }
 }
