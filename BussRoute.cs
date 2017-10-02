@@ -1,19 +1,19 @@
 ﻿namespace SimulationCore
 {
-    class BussRoute //class and subclasses for the route stops as a doubly linked list
+    static class BussRoute //class and subclasses for the route stops as a doubly linked list
     {
         public class RouteWrapper
         {
             public BussStop stop = new BussStop();
-            int stopnumber;
-            BussStop previous;
-            BussStop next;
+            int stopnumber = 0;
+            RouteWrapper previous;
+            RouteWrapper next;
 
-            public void SetPrev (BussStop subject)
+            public void SetPrev (RouteWrapper subject)
             {
                 previous = subject;
             }
-            public void SetNext(BussStop subject)
+            public void SetNext(RouteWrapper subject)
             {
                 next = subject;
             }
@@ -24,11 +24,11 @@
 
 
 
-            public BussStop GetPrev ()
+            public RouteWrapper GetPrev ()
             {
                 return previous;
             }
-            public BussStop GetNext()
+            public RouteWrapper GetNext()
             {
                 return next;
             }
@@ -36,6 +36,24 @@
             {
                 return stopnumber;
             }
+        }
+
+        static public RouteWrapper[] Ringify(int size) // makes a circular doubly linked list of the specified size
+        {
+            RouteWrapper[] Ringaround;
+            Ringaround = new RouteWrapper[size];
+
+            for(int count = 1; count < size; count++)
+            {
+                Ringaround[count - 1].SetNext(Ringaround[count]);
+                Ringaround[count].SetPrev(Ringaround[count - 1]);
+                Ringaround[count].SetNum(size);
+            }
+            Ringaround[0].SetPrev(Ringaround[size]);
+            Ringaround[size].SetNext(Ringaround[0]);
+
+            return Ringaround;
+
         }
     }
 }
