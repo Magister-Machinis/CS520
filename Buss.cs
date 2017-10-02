@@ -6,8 +6,18 @@ namespace SimulationCore
     class Buss //generic holder class for the busses along with a stack of riders
     {
 
-
+        BussRoute.RouteWrapper currentstop;
         List<Rider> passenger;
+
+        public BussRoute.RouteWrapper getStop()
+        {
+            return currentstop;
+        }
+
+        public void setStop(BussRoute.RouteWrapper newstop)
+        {
+            currentstop = newstop;
+        }
         public Rider getPassenger() //views top of rider stack
         {
             return passenger[0];

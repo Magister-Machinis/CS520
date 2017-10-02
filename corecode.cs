@@ -28,12 +28,16 @@ namespace SimulationCore
             bigtimer.Start();
             littletimer.Start();
             Toolkit Tools = new Toolkit();
-            
-           
-            int NumberofStops = 16;
+
+
+            int NumberofStops;
+            Console.WriteLine("Input number of stops in the route to be simulated: ");
+            NumberofStops = Convert.ToInt32(Console.ReadLine());
+
             BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops);
             double numberofrounds = 0;
-            int frequency = 10; // percent chance that random function will trigger
+            int frequency = 10; // percent chance that random function will trigger a buss appearing or leaving circuit
+            int footTraffic = 25; // percent chance of a new passenger appearing at a stop
             
             Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             numberofrounds = Convert.ToDouble(Console.ReadLine());
@@ -48,12 +52,20 @@ namespace SimulationCore
                  * using crypto grade randomness later for spice
                  */
             }
-            Console.WriteLine("Running " + numberofrounds + " rounds of simulation");
+            Console.WriteLine("Running " + numberofrounds + " rounds of simulation with a route of " + NumberofStops + " stops.");
+
 
 
             while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
+                for(int count = 0; count < NumberofStops; count++)
+                {
+                    if(Tools.Eventgenerator(footTraffic) == true)
+                    {
+                        route[count].stop.addPassenger(); //still need to flesh out bussstops
+                    }
+                }
                 if (Tools.Eventgenerator(frequency) == true) //deciding whether to add a new buss to the congaline
                 {
 
