@@ -9,6 +9,10 @@ namespace SimulationCore
         BussRoute.RouteWrapper currentstop;
         List<Rider> passenger;
 
+        public Buss()
+        {
+            passenger = new List<Rider>();
+        }
         public BussRoute.RouteWrapper getStop()
         {
             return currentstop;

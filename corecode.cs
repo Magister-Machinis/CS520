@@ -70,7 +70,8 @@ namespace SimulationCore
                 }
                 if (Tools.Eventgenerator(frequency) == true) //deciding whether to add a new buss to the congaline
                 {
-
+                    Buss newbuss = new Buss();
+                    bussList.Add(newbuss);
                 }
 
             }
