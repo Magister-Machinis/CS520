@@ -68,10 +68,36 @@ namespace SimulationCore
                         route[count].stop.addWaiter(anotherone);
                     }
                 }
+
+
                 if (Tools.Eventgenerator(frequency) == true) //deciding whether to add a new buss to the congaline
                 {
                     Buss newbuss = new Buss();
+                    newbuss.setStop(route[0]);
+                    route[0].stop.addBuss(newbuss);
                     bussList.Add(newbuss);
+                }
+
+                for(int count = NumberofStops-1; count >=0; count --) // walking backwards through the stops to process the busses as they crawl around the route
+                {
+                    while (route[count].stop.getBussNum() != 0)
+                    {
+                        Rider currentguy = route[count].stop.getFront();
+                        Buss currentbuss = route[count].stop.getBuss();
+                        Rider frontpassenger = currentbuss.getPassenger();
+                        
+                        if (Tools.Equals(currentguy.getattention()) == true && route[count].stop.getPassNum() > 0) //buss loads passengers until no passengers left or one doesnt want to get on
+                        {
+                            route[count].stop.popFront();
+                            currentbuss.stackPassenger(currentguy);
+                        }
+                        else
+                        {
+                            route[count].stop.popBuss();
+                            BussRoute.RouteWrapper nextstop = route[count].GetNext();
+                            nextstop.stop.addBuss(currentbuss);
+                        }
+                    }
                 }
 
             }

@@ -17,6 +17,11 @@ namespace SimulationCore
             int attentionspan = ((Tool.ReallyRandom()) % 100); //how likely this user is to get on or off a buss
         }
 
+        public int getattention()
+        {
+            return attentionspan;
+        }
+
         public bool getState()
         {
             return riding;
