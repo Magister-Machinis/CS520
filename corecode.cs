@@ -3,6 +3,7 @@
  * msdn.microsoft.com
  * tutorialspoint.com
  *  https://stackoverflow.com/questions/4892588/rngcryptoserviceprovider-random-number-review (bits and bobs used to build randomeventgenerator)
+ *  https://www.tutorialspoint.com/csharp/csharp_file_io.htm (file IO examples because i ALWAYS screw that up)
  * Hosted at:
  * https://github.com/Magister-Machinis/CS520 (amongst my other efforts)
  * 
@@ -12,15 +13,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.IO;
 using GenericTools;
 
 namespace SimulationCore
 {
     class Program
     {
- 
+
         static void Main(string[] args)
         {
             Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
@@ -39,7 +40,7 @@ namespace SimulationCore
             double numberofrounds = 0;
             int frequency = 10; // percent chance that random function will trigger a buss appearing or leaving circuit
             int footTraffic = 25; // percent chance of a new passenger appearing at a stop
-            
+
             Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             numberofrounds = Convert.ToDouble(Console.ReadLine());
             littletimer.Stop();
@@ -60,9 +61,9 @@ namespace SimulationCore
             while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
-                for(int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
+                for (int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
                 {
-                    if(Tools.Eventgenerator(footTraffic) == true)
+                    if (Tools.Eventgenerator(footTraffic) == true)
                     {
                         Rider anotherone = new Rider();
                         route[count].stop.addWaiter(anotherone);
@@ -78,17 +79,18 @@ namespace SimulationCore
                     bussList.Add(newbuss);
                 }
 
-                for(int count = NumberofStops-1; count >=0; count --) // walking backwards through the stops to process the busses as they crawl around the route
+                for (int count = NumberofStops - 1; count >= 0; count--) // walking backwards through the stops to process the busses as they crawl around the route
                 {
                     while (route[count].stop.getBussNum() != 0)
                     {
                         Rider currentguy = route[count].stop.getFront();
                         Buss currentbuss = route[count].stop.getBuss();
                         Rider frontpassenger = currentbuss.getPassenger();
-                        
+
                         if (Tools.Equals(currentguy.getattention()) == true && route[count].stop.getPassNum() > 0) //buss loads passengers until no passengers left or one doesnt want to get on
                         {
                             route[count].stop.popFront();
+                            currentguy.toggleState();
                             currentbuss.stackPassenger(currentguy);
                         }
                         else
@@ -107,6 +109,12 @@ namespace SimulationCore
             Console.WriteLine("Runtime " + runduration);
             Console.WriteLine("Press any key to exit");
             Console.ReadLine();
+        }
+
+
+        public static void outputtofile(string filepath, BussRoute.RouteWrapper[] route)
+        {
+            FileStream output = new FileStream
         }
     }
 }
