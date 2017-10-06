@@ -35,7 +35,7 @@ namespace SimulationCore
             int NumberofStops;
             Console.WriteLine("Input number of stops in the route to be simulated: ");
             NumberofStops = Convert.ToInt32(Console.ReadLine());
-
+            Console.WriteLine(NumberofStops);
             BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops);
             double numberofrounds = 0;
             int frequency = 10; // percent chance that random function will trigger a buss appearing or leaving circuit

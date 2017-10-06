@@ -45,14 +45,19 @@ namespace SimulationCore
             RouteWrapper[] Ringaround;
             Ringaround = new RouteWrapper[size];
 
+            for(int count= 0; count < size; count++)
+            {
+                Ringaround[count] = new RouteWrapper();
+            }
+
             for(int count = 1; count < size; count++)
             {
                 Ringaround[count - 1].SetNext(Ringaround[count]);
                 Ringaround[count].SetPrev(Ringaround[count - 1]);
                 Ringaround[count].SetNum(size);
             }
-            Ringaround[0].SetPrev(Ringaround[size]);
-            Ringaround[size].SetNext(Ringaround[0]);
+            Ringaround[0].SetPrev(Ringaround[size-1]);
+            Ringaround[size-1].SetNext(Ringaround[0]);
 
             return Ringaround;
         }
