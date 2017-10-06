@@ -22,7 +22,7 @@ namespace SimulationCore
             return attentionspan;
         }
 
-        public bool getState()
+        public bool getState() //probably not needed, got good form nonetheless
         {
             return riding;
         }

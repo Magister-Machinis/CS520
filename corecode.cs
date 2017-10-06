@@ -63,7 +63,7 @@ namespace SimulationCore
             while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
-                BussRoute.outputtofile(path, route);
+                BussRoute.outputtofile(path, route); //recording current state of the route
                 for (int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
                 {
                     if (Tools.Eventgenerator(footTraffic) == true)
