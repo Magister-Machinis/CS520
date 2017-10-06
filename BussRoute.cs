@@ -1,4 +1,6 @@
-﻿namespace SimulationCore
+﻿using System.IO;
+
+namespace SimulationCore
 {
     static class BussRoute //class and subclasses for the route stops as a doubly linked list
     {
@@ -53,8 +55,32 @@
             Ringaround[size].SetNext(Ringaround[0]);
 
             return Ringaround;
-
         }
+
+        public static void outputtofile(string filepath, BussRoute.RouteWrapper[] route)
+        {
+            if (!File.Exists(filepath))
+            {
+                using (StreamWriter output = File.CreateText(filepath))
+                {
+                    output.WriteLine("Initializing record of route states, each iteration will represent the state of the route after a full round of simulation");
+                    output.WriteLine("--------------------------");
+                }
+            }
+
+            using (StreamWriter output = File.AppendText(filepath))
+            {
+                for(int count = 0; count < route.Length; count++)
+                {
+                    output.WriteLine("Stop number: " + route[count].Getnum());
+                    output.WriteLine("Number of busses at stop: " + route[count].stop.getBussNum());
+                    output.WriteLine("Number of waiting passengers at stop: " + route[count].stop.getPassNum());
+                    output.WriteLine("--------------------------");
+                }
+            }
+            
+        }
+
     }
 }
  

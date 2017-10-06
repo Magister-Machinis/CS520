@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GenericTools;
 namespace SimulationCore
 {
     class Buss //generic holder class for the busses along with a stack of riders
@@ -8,10 +9,13 @@ namespace SimulationCore
 
         BussRoute.RouteWrapper currentstop;
         List<Rider> passenger;
+        int Bussnum;
+        Toolkit Tools = new Toolkit();
 
         public Buss()
         {
             passenger = new List<Rider>();
+            Bussnum = Tools.ReallyRandom();
         }
         public BussRoute.RouteWrapper getStop()
         {

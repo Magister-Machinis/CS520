@@ -45,6 +45,8 @@ namespace SimulationCore
             numberofrounds = Convert.ToDouble(Console.ReadLine());
             littletimer.Stop();
 
+            string path = Path.GetFullPath(".\\output.txt");
+
             if (numberofrounds == 0)
             {
                 numberofrounds = Convert.ToDouble(littletimer.ElapsedTicks);
@@ -61,6 +63,7 @@ namespace SimulationCore
             while (numberofrounds > 0) //main event loop
             {
                 numberofrounds--;
+                BussRoute.outputtofile(path, route);
                 for (int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
                 {
                     if (Tools.Eventgenerator(footTraffic) == true)
@@ -109,12 +112,6 @@ namespace SimulationCore
             Console.WriteLine("Runtime " + runduration);
             Console.WriteLine("Press any key to exit");
             Console.ReadLine();
-        }
-
-
-        public static void outputtofile(string filepath, BussRoute.RouteWrapper[] route)
-        {
-            FileStream output = new FileStream
         }
     }
 }
