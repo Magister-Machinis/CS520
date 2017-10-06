@@ -68,7 +68,7 @@ namespace SimulationCore
                 {
                     if (Tools.Eventgenerator(footTraffic) == true)
                     {
-                        Rider anotherone = new Rider();
+                        Rider anotherone = new Rider();                      
                         route[count].stop.addWaiter(anotherone);
                     }
                 }

@@ -9,14 +9,10 @@ namespace SimulationCore
         public Rider()
         {
             riding = false;
-            Setattention();
-        }
-        public void Setattention()
-        {
             Toolkit Tool = new Toolkit();
-            int attentionspan = ((Tool.ReallyRandom()) % 100); //how likely this user is to get on or off a buss
+            attentionspan = ((Tool.ReallyRandom()) % 100); //how likely this user is to get on or off a buss
         }
-
+        
         public int getattention()
         {
             return attentionspan;
