@@ -8,18 +8,36 @@ namespace SimulationCore
     {
         List<Rider> waitingQueue;
         List<Buss> waitingRides;
+        bool loading;
 
         public BussStop()
         {
             waitingQueue = new List<Rider>();
             waitingRides = new List<Buss>();
+            loading = false;
         }
 
         public void addBuss(Buss newbuss)
         {
             waitingRides.Add(newbuss);
         }
+        
+        public bool LoadingState()
+        {
+            return loading;
+        }
 
+        public void ToggleLoad()
+        {
+            if(loading == false)
+            {
+                loading = true;
+            }
+            else
+            {
+                loading = false;
+            }
+        }
         public Buss getBuss()
         {
             return waitingRides[0];

@@ -1,4 +1,5 @@
 ﻿using GenericTools;
+using System.Threading;
 namespace SimulationCore
 {
     class Rider //generic holder for riders and whether they are on a buss or waiting
@@ -32,6 +33,27 @@ namespace SimulationCore
             else
             {
                 riding = false;
+            }
+        }
+
+        static public void Repopulate(int chance, BussRoute.RouteWrapper[] route) //background thread that randomly adds waiting passengers to the stops
+        {
+            Toolkit Tool = new Toolkit();
+            int count = 0; // counter for looping through route, will be using a modulo call to keep it bound within route size
+            while (true)
+            {
+                if (count > route.Length)
+                {
+                    count = count % route.Length;
+                }
+
+                if(Tool.Eventgenerator(chance) == true) //at each stop, there is a 'chance' percent chance of adding a new waiting passenger to that stop
+                {
+                    Rider newguy = new Rider();
+                    route[count].stop.addWaiter(newguy);
+                }
+                Thread.Sleep(Tool.ReallyRandom()*100);
+                count++;
             }
         }
     }

@@ -26,7 +26,7 @@ namespace GenericTools
             byte[] buffer = new byte[4];
             gibberish.GetBytes(buffer);
             int randomnum = BitConverter.ToInt32(buffer, 0);
-            return randomnum;
+            return Math.Abs(randomnum);
         }
     }
 }
