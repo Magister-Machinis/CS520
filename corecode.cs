@@ -70,8 +70,11 @@ namespace SimulationCore
             }
             Thread populating = new Thread(() => Rider.Repopulate(footTraffic, route)); //activating the background thread that adds in people
             populating.Start();
-            Thread snapshot = new Thread(() => BussRoute.Outputtofile(path, route)); //activating the background thread that records all of this
+            Thread snapshot = new Thread(() => BussRoute.Outputtofile(path, route, bussList)); //activating the background thread that records all of this
             snapshot.Start();
+            int waitnum = Tools.ReallyRandom() % 50000;
+            Console.WriteLine("Waiting " + waitnum / 1000 + " seconds to allow stops to populate a bit");
+            Thread.Sleep(waitnum);
             Console.WriteLine("Begining to activate busses");
             for(int buscount = 0; buscount < bussList.Count-1; buscount++) //sending off each buss as a thread
             {
@@ -80,7 +83,7 @@ namespace SimulationCore
                 threadlist.Add(bussymcbussface);
                 bussymcbussface.Start();
                 Console.WriteLine("done");
-                Thread.Sleep(Tools.ReallyRandom() % 500); //so that the threads have some space between them
+                Thread.Sleep(500); //so that the threads have some space between them
                 
             }
 

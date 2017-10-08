@@ -12,11 +12,30 @@ namespace SimulationCore
         List<Rider> passenger;
         int Bussnum;
         Toolkit Tools = new Toolkit();
+        bool intransit;
 
         public Buss()
         {
             passenger = new List<Rider>();
             Bussnum = Tools.ReallyRandom(); //buss is assigned a random int32 number for identification purposes, same numbered bussses should be rare enough to not be a concern
+            intransit = false;
+        }
+
+        public bool getTravel()
+        {
+            return intransit;
+        }
+
+        public void toggleTransit()
+        {
+            if(intransit == false)
+            {
+                intransit = true;
+            }
+            else
+            {
+                intransit = false;
+            }
         }
         public BussRoute.RouteWrapper getStop()
         {
@@ -56,14 +75,27 @@ namespace SimulationCore
         public void MoveToNextStop()
         {
             Console.WriteLine("Buss number: " + this.GetNum() +" is moving to next stop");
-            currentstop.stop.popBuss(); //removes this buss from the front of the queue as it pulls away from the stop
-            currentstop = currentstop.GetNext();
-            for(int sleepcount =1; sleepcount < 30; sleepcount++) //simulating 5 minutes of 'travel' time, cant do it in one sleep command because it takes an int32 input for milliseconds
+            this.toggleTransit();
+            this.currentstop.addBuss(this.currentstop.stop.popBuss()); //moving buss from loading queue to traveling queue
+
+            for (int sleepcount = 1; sleepcount < 30; sleepcount++)
             {
                 Thread.Sleep(10000);
             }
+
+            while ((this.currentstop.getFrontbuss()).GetNum() != this.GetNum())//waits for this buss to be at the front of the queue and is simulating 5 minutes of 'travel' time, cant do it in one sleep command because it takes an int32 input for milliseconds
+            {
+                for (int sleepcount = 1; sleepcount < 30; sleepcount++) 
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+            currentstop.popBuss(); //removes buss from travel queue once it sees that its at the front
+            currentstop = currentstop.GetNext();
+            
                
             currentstop.stop.addBuss(this); //adds buss to end of new stops queue as it arrives
+            this.toggleTransit();
         }
 
         public void BussDriver(double NumberofRounds) //function acts as the holder for each thread
@@ -71,9 +103,9 @@ namespace SimulationCore
             Console.WriteLine(this.GetNum() + " Buss has begun!");
             for (double roundcount = 0; roundcount < NumberofRounds; roundcount++) //main routine for this bus on the route
             {
-                while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this bus is the one at the front of the queue, sleeps a random time if not
+                while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this bus is the one at the front of the queue, sleeps a time if not
                 {
-                    Thread.Sleep(Tools.ReallyRandom()%5000);
+                    Thread.Sleep(5000);
                 }
                 Console.WriteLine("Buss " + this.GetNum()+ " is begining round " + roundcount);
                 Rider currentguy;
