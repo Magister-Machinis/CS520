@@ -66,22 +66,28 @@ namespace SimulationCore
                 newbuss.setStop(route[0]);
                 route[0].stop.addBuss(newbuss);
                 bussList.Add(newbuss);
+                Console.WriteLine("add buss " + newbuss.GetNum() + " to list");
             }
             Thread populating = new Thread(() => Rider.Repopulate(footTraffic, route)); //activating the background thread that adds in people
             populating.Start();
             Thread snapshot = new Thread(() => BussRoute.Outputtofile(path, route)); //activating the background thread that records all of this
             snapshot.Start();
-            for(int buscount = 0; buscount < bussList.Count; buscount++) //sending off each buss as a thread, intentionally doing an asynchronous activation to mix them up a bit
+            Console.WriteLine("Begining to activate busses");
+            for(int buscount = 0; buscount < bussList.Count-1; buscount++) //sending off each buss as a thread
             {
-                Thread.Sleep(Tools.ReallyRandom());
+                Console.WriteLine("spinning off buss number " + bussList[buscount].GetNum());
                 Thread bussymcbussface = new Thread(() => bussList[buscount].BussDriver(numberofrounds));                
-                bussymcbussface.Start();
                 threadlist.Add(bussymcbussface);
+                bussymcbussface.Start();
+                Console.WriteLine("done");
+                Thread.Sleep(Tools.ReallyRandom() % 500); //so that the threads have some space between them
+                
             }
 
-            foreach(Thread item in threadlist) //waiting on busses to finish their rounds before killing the background threads
+
+            for (int threadcount=0; threadcount < threadlist.Count; threadcount++)
             {
-                item.Join();
+                threadlist[threadcount].Join();
             }
             populating.Abort();
             snapshot.Abort();

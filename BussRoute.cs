@@ -75,8 +75,8 @@ namespace SimulationCore
                 {
                     Thread.Sleep(10000);
                 }
-                Console.WriteLine()
-                if (!File.Exists(filepath))
+                Console.WriteLine("taking snapshot at "+DateTime.Now);
+                if(!File.Exists(filepath))
                 {
                     using (StreamWriter output = File.CreateText(filepath))
                     {
