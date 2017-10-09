@@ -94,68 +94,7 @@ namespace SimulationCore
             }
             populating.Abort();
             snapshot.Abort();
-
-            /* initial sketching of linear simulation
-            while (numberofrounds > 0) //main event loop
-            {
-                numberofrounds--;
-                BussRoute.Outputtofile(path, route); //recording current state of the route
-                for (int count = 0; count < NumberofStops; count++) //randomly adds in new riders at each stop
-                {
-                    if (Tools.Eventgenerator(footTraffic) == true)
-                    {
-                        Rider anotherone = new Rider();                      
-                        route[count].stop.addWaiter(anotherone);
-                    }
-                }
-
-                
-                
-
-                
-                for (int count = NumberofStops - 1; count >= 0; count--) // walking backwards through the stops to process the busses as they crawl around the route
-                {
-                    while (route[count].stop.getBussNum() != 0)
-                    {
-                        Rider currentguy;
-                        if (route[count].stop.getPassNum() > 0) //checking if there is anyone waiting at the stop, else assigning a flag value
-                        {
-                            currentguy = route[count].stop.getFront();
-                        }
-                        else
-                        {
-                            currentguy = null;
-                        }
-                        Buss currentbuss = route[count].stop.getBuss();
-                        bool flagval = false;
-                        if (currentguy != null)
-                        {
-                            if (Tools.Eventgenerator(currentguy.getattention()) == true) //buss loads passengers until no passengers left or one doesnt want to get on
-                            {
-                                route[count].stop.popFront();
-                                currentguy.toggleState();
-                                currentbuss.stackPassenger(currentguy);
-                            }
-                            else
-                            {
-                                flagval = true;
-                            }
-                        }
-                        else
-                        {
-                            flagval = true;
-                        }
-
-                        if(flagval == true)
-                        {
-                            route[count].stop.popBuss();
-                            BussRoute.RouteWrapper nextstop = route[count].GetNext();
-                            nextstop.stop.addBuss(currentbuss);
-                        }
-                    }
-                }
-                */
-
+            
         
 
         bigtimer.Stop();
