@@ -40,8 +40,8 @@ namespace SimulationCore
             Console.WriteLine(NumberofStops);
             BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops);
             double numberofrounds = 0;
-            int footTraffic = 50; // percent chance of a new passenger appearing at a stop
-            int NumberofBusses = 10; // how many busses are going to be in this simulation
+            int footTraffic = 45; // percent chance of a new passenger appearing at a stop
+            int NumberofBusses = 15; // how many busses are going to be in this simulation
 
             Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             numberofrounds = Convert.ToDouble(Console.ReadLine());

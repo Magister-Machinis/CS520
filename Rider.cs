@@ -12,7 +12,7 @@ namespace SimulationCore
         {
             riding = false;
             Toolkit Tool = new Toolkit();
-            attentionspan = ((Tool.ReallyRandom()) % 100); //how likely this user is to get on or off a buss
+            attentionspan = (((Tool.ReallyRandom()) % 51)+50); //how likely this user is to get on or off a buss, restricting it to 51%-100% so that they are inclined to get on
         }
         
         public int getattention()
@@ -54,6 +54,7 @@ namespace SimulationCore
                     {
                         Rider newguy = new Rider();
                         route[count].stop.addWaiter(newguy);
+                        Console.WriteLine("Adding a waiting rider to stop: " + route[count].Getnum());
                     }
                 }
                 Thread.Sleep(Tool.ReallyRandom()%60000);

@@ -109,32 +109,39 @@ namespace SimulationCore
                 }
                 Console.WriteLine("Buss " + this.GetNum()+ " is begining round " + roundcount);
                 Rider currentguy;
-                if (currentstop.stop.getPassNum() > 0) //checking if there is anyone waiting at the stop, else assigning a flag value
-                {
-                    currentguy = currentstop.stop.getFront();
-                }
-                else
-                {
-                    currentguy = null;
-                }
                 bool flagval = false;
-                if (currentguy != null)
+                while (flagval == false)
                 {
-                    if (Tools.Eventgenerator(currentguy.getattention()) == true) //buss loads passengers until no passengers left or one doesnt want to get on
+                    if (currentstop.stop.getPassNum() > 0) //checking if there is anyone waiting at the stop, else assigning a flag value
                     {
-                        Console.WriteLine("Buss " + this.GetNum() + " is loading a passenger");
-                        currentstop.stop.popFront();
-                        currentguy.toggleState();
-                        this.stackPassenger(currentguy);
+                        currentguy = currentstop.stop.getFront();
+                    }
+                    else
+                    {
+                        currentguy = null;
+                    }
+
+
+                    if (currentguy != null)
+                    {
+                        if (Tools.Eventgenerator(currentguy.getattention()) == true) //buss loads passengers until no passengers left or one doesnt want to get on
+                        {
+                            Console.WriteLine("Buss " + this.GetNum() + " is loading a passenger");
+                            currentstop.stop.popFront();
+                            currentguy.toggleState();
+                            this.stackPassenger(currentguy);
+                        }
+                        else
+                        {
+                            flagval = true;
+                            Console.WriteLine(this.GetNum() + " buss is not wanted by passengers remaining");
+                        }
                     }
                     else
                     {
                         flagval = true;
+                        Console.WriteLine(this.GetNum() + " buss has no more passengers to pick up at this stop");
                     }
-                }
-                else
-                {
-                    flagval = true;
                 }
                 Console.WriteLine("Buss " + this.GetNum() + " is leaving the station");
                 if (flagval == true) // if true then buss is done loading passengers at this stop
