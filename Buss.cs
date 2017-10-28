@@ -13,12 +13,17 @@ namespace SimulationCore
         int Bussnum;
         Toolkit Tools = new Toolkit();
         bool intransit;
+        int Bursttime;
+        int Arrivaltime;
 
-        public Buss()
+        public Buss(int busnum, int bursttime, int arrivaltime)
         {
             passenger = new List<Rider>();
-            Bussnum = Tools.ReallyRandom(); //buss is assigned a random int32 number for identification purposes, same numbered bussses should be rare enough to not be a concern
+            Bussnum = busnum;
             intransit = false;
+            Bursttime = bursttime;
+            Arrivaltime = arrivaltime;
+
         }
 
         public bool getTravel()
@@ -98,8 +103,12 @@ namespace SimulationCore
             this.toggleTransit();
         }
 
-        public void BussDriver(double NumberofRounds) //function acts as the holder for each thread
+        public void BussDriver(double NumberofRounds, Controller controller) //function acts as the holder for each thread
         {
+            while(controller.getState() == false) //waiting for the simulation to start
+            {
+                Thread.Sleep(1);
+            }
             Console.WriteLine(this.GetNum() + " Buss has begun!");
             for (double roundcount = 0; roundcount < NumberofRounds; roundcount++) //main routine for this bus on the route
             {

@@ -84,11 +84,15 @@ namespace SimulationCore
             return Ringaround;
         }
 
-        public static void Outputtofile(string filepath, BussRoute.RouteWrapper[] route, List<Buss> bussList) //periodically records the state of the route to file
+        public static void Outputtofile(string filepath, BussRoute.RouteWrapper[] route, List<Buss> bussList, Controller controller) //periodically records the state of the route to file
         {
             int counter = 0;
+            while(controller.getState()==false) // waiting for simulation to start
+            {
+                Thread.Sleep(1);
+            }
             Console.WriteLine("Recorder initiated at "+ DateTime.Now);
-            while (true)
+            while (controller.getState()==true) //will safely wrap up last iteration when simulation ends now
             {
                 for (int sleepcount = 1; sleepcount < 30; sleepcount++) //takes a snapshot of current route state, cant do it in one sleep command because it takes an int32 input for milliseconds
                 {
