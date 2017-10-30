@@ -25,6 +25,14 @@ namespace SimulationCore
             Arrivaltime = arrivaltime;
 
         }
+        public int getBurst()
+        {
+            return Bursttime;
+        }
+        public int getArrival()
+        {
+            return Arrivaltime;
+        }
 
         public bool getTravel()
         {
@@ -109,6 +117,13 @@ namespace SimulationCore
             {
                 Thread.Sleep(1);
             }
+            for(int count = 0; count < this.getArrival(); count++) //postpones start for selected arival time
+            {
+                Thread.Sleep(1);
+            }
+
+
+            /* code from previous project
             Console.WriteLine(this.GetNum() + " Buss has begun!");
             for (double roundcount = 0; roundcount < NumberofRounds; roundcount++) //main routine for this bus on the route
             {
@@ -160,7 +175,7 @@ namespace SimulationCore
                 Console.WriteLine("round " + roundcount + " has finished for buss " + this.GetNum()+" waiting in line at next stop now");
 
             }
-            
+            */
         }
     }
 }
