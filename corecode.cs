@@ -34,19 +34,19 @@ namespace SimulationCore
             Controller controller = new Controller();
             List<Buss> bussList = new List<Buss>();
             List<Thread> threadlist = new List<Thread>();
-            int NumberofStops;
-            Console.WriteLine("Input number of stops in the route to be simulated: ");
-            NumberofStops = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine(NumberofStops);
+            int NumberofStops =1; //hardcoding this for this version
+           // Console.WriteLine("Input number of stops in the route to be simulated: ");
+            //NumberofStops = Convert.ToInt32(Console.ReadLine());
+           // Console.WriteLine(NumberofStops);
             BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops); // wont actually do much in this version
-            double numberofrounds = 0;
+            double numberofrounds = 1;//hardcoding it for this variant
             int footTraffic = 45; // percent chance of a new passenger appearing at a stop
             int NumberofBusses = 3; // how many busses are going to be in this simulation
 
             int[] arrivaltimes = { 0, 4, 10 };
             int[] burstimes = { 80, 40, 10 }; //simple holders for the arrivaltimes and burstimes of the processes being initialized
-            Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
-            numberofrounds = Convert.ToDouble(Console.ReadLine());
+            //Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
+            //numberofrounds = Convert.ToDouble(Console.ReadLine());
             littletimer.Stop();
 
             string path = Path.GetFullPath(".\\output.txt");
@@ -60,6 +60,7 @@ namespace SimulationCore
                  * using crypto grade randomness later for spice
                  */
             }
+
             Console.WriteLine("Running " + numberofrounds + " rounds of simulation with a route of " + NumberofStops + " stops.");
 
             for (int count = 0; count < NumberofBusses; count++) //adding busses to the starting line

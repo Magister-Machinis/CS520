@@ -5,8 +5,16 @@ namespace GenericTools
 {
     public class Toolkit
     {
-        public Toolkit()
-        {}
+        bool Entropy;
+        bool Type;
+        int seed1;
+        int seed2;
+        public Toolkit(bool entropy = false, bool linearorexpo = false) // instance of generator is started with either in built crypto PRG or homebrewed entropy source
+        {
+            Entropy = entropy;
+            Type = linearorexpo;
+        }
+
         public bool Eventgenerator(int freq) // using built in cryptographic random # generator to produce true returns 'freq' percentage of the time
         {
             int randomnum = ReallyRandom();
