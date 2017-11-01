@@ -121,16 +121,23 @@ namespace SimulationCore
             {
                 Thread.Sleep(1);
             }
-
-
+            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+            while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this item is the one at the front of the queue, sleeps a time if not
+            {
+                Thread.Sleep(1);
+            }
+            this.toggleTransit(); // marks item as active for the recorder
+            for (int count = 0; count < this.getBurst(); count++) //simulates time spent using critical region
+            {
+                Thread.Sleep(1);
+            }
+            this.toggleTransit();
+            this.currentstop.stop.popBuss(); // gets out of the way for the next setup
             /* code from previous project
             Console.WriteLine(this.GetNum() + " Buss has begun!");
             for (double roundcount = 0; roundcount < NumberofRounds; roundcount++) //main routine for this bus on the route
             {
-                while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this bus is the one at the front of the queue, sleeps a time if not
-                {
-                    Thread.Sleep(5000);
-                }
+                
                 Console.WriteLine("Buss " + this.GetNum()+ " is begining round " + roundcount);
                 Rider currentguy;
                 bool flagval = false;

@@ -67,7 +67,7 @@ namespace SimulationCore
             {
                 Buss newbuss = new Buss(count, burstimes[count],arrivaltimes[count]);
                 newbuss.setStop(route[0]);
-                route[0].stop.addBuss(newbuss);
+                
                 bussList.Add(newbuss);
                 Console.WriteLine("add buss " + newbuss.GetNum() + " to list");
             }
