@@ -65,7 +65,7 @@ namespace SimulationCore
 
             
 
-            Console.WriteLine("Input size of memory Block (in Bytes): ");
+            Console.WriteLine("Input size of memory Block (in KiloBytes): ");
             int memsize = Convert.ToInt32(Console.ReadLine());
             char[] Memarray = new char[memsize];
             for (int count = 0; count < Memarray.Length; count++)
@@ -75,9 +75,9 @@ namespace SimulationCore
             }
 
             Memblock Root = new Memblock(0, Memarray.Length);
-            int[] MemInput = new int[] { 20000,  35000,  90000,  40000,  240000 };
+            int[] MemInput = new int[] { 20,  35,  90,  40,  240 };
             char[] InputName = new char[] { 'a', 'b', 'c', 'd', 'e' };
-            int[] MemOutput = new int[] {  40000,  20000,  90000,  35000,  240000 };
+            int[] MemOutput = new int[] {  40,  20,  90,  35,  240 };
             char[] OutputName = new char[] { 'd', 'a', 'c', 'b', 'e' };
             string filepath = @".\results.txt";
             filepath = Path.GetFullPath(filepath);
@@ -122,26 +122,42 @@ namespace SimulationCore
 
         public static char[] Consolidate(Memblock subject, char[] Memarray) //recursively checks for sibling pairs who are both unallocated and merges them
         {
-            if(subject.Container == true)
+            if (subject.Container == true)
             {
-                if(subject.Children[0] != null)
+                try
                 {
-                   Memarray = Consolidate(subject.Children[0], Memarray);
+                    if (subject.Children[0] != null)
+                    {
+                        Memarray = Consolidate(subject.Children[0], Memarray);
+                    }
                 }
-                if (subject.Children[1] != null)
+                catch { }
+
+                try
                 {
-                   Memarray = Consolidate(subject.Children[1], Memarray);
+                    if (subject.Children[1] != null)
+                    {
+                        Memarray = Consolidate(subject.Children[1], Memarray);
+                    }
                 }
+                catch { }
+                return Memarray;
             }
             else
             {
                 Memblock targetp = subject.Parent;
-                if(Memarray[targetp.Children[0].Start] =='u' & Memarray[targetp.Children[1].Start] == 'u')
+                try
                 {
-                    targetp.Merge();
+
+                    if (Memarray[targetp.Children[0].Start] == 'u' & Memarray[targetp.Children[1].Start] == 'u')
+                    {
+                        targetp.Merge();
+                    }
                 }
+                catch { }
+                return Memarray;
             }
-            return Memarray;
+            
         }
 
         public static Memblock Finder(Memblock subject, char name, char[] Memarray)
@@ -152,24 +168,22 @@ namespace SimulationCore
             {
                 suba= Finder(subject.Children[0], name, Memarray);
                 subb= Finder(subject.Children[1], name, Memarray);
+                if (Memarray[suba.Start] == name)
+                {
+                    return suba;
+                }
+                else
+                {
+                    return subb;
+                }
+                
             }
             else
             {
                 return subject;
             }
 
-            if(Memarray[suba.Start] == name)
-            {
-                return suba;
-            }
-            else if (Memarray[subb.Start] == name)
-            {
-                return subb;
-            }
-            else
-            {
-                return null;
-            }
+            
         }
 
         public static void WritetoFile(string filepath, char[] Memarray)
@@ -183,7 +197,8 @@ namespace SimulationCore
             }
             using (StreamWriter output = File.AppendText(filepath))
             {
-                for(int count = 0; count < Memarray.Length; count ++)
+                output.WriteLine("Snapshot of state taken at: " + DateTime.Now);
+                for (int count = 0; count < Memarray.Length; count ++)
                 {
                     string linetowrite = " ";
                     if(Memarray[count] != 'u')
