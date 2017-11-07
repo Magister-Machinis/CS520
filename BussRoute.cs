@@ -86,57 +86,29 @@ namespace SimulationCore
 
         public static void Outputtofile(string filepath, BussRoute.RouteWrapper[] route, List<Buss> bussList, Controller controller) //periodically records the state of the route to file
         {
-            int counter = 0;
-            while(controller.getState()==false) // waiting for simulation to start
-            {
-                Thread.Sleep(1);
-            }
-            Console.WriteLine("Recorder initiated at "+ DateTime.Now);
-            while (controller.getState()==true) //will safely wrap up last iteration when simulation ends now
-            {
-                for (int sleepcount = 1; sleepcount < 30; sleepcount++) //takes a snapshot of current route state, cant do it in one sleep command because it takes an int32 input for milliseconds
-                {
-                    Thread.Sleep(10000);
-                }
-                Console.WriteLine("taking snapshot at "+DateTime.Now);
-                if(!File.Exists(filepath))
-                {
-                    using (StreamWriter output = File.CreateText(filepath))
-                    {
-                        output.WriteLine("Initializing record of route and buss states, each iteration will represent the state of the route after a full round of simulation");
-                        output.WriteLine("--------------------------");
-                        output.WriteLine("======================");
-                    }
-                }
 
-                using (StreamWriter output = File.AppendText(filepath))
+            filepath = Path.GetFullPath(filepath);
+
+            using (StreamWriter output = File.CreateText(filepath))
+            {
+                string line = "| ";
+                for (int count = 0; count < bussList.Count; count++)
                 {
-                    
-                    output.WriteLine("Begin Simulation Round Record:"+counter+" time is " + DateTime.Now);
-                    output.WriteLine("======================");
-                    output.WriteLine("--------------------------");
-                    output.WriteLine("current state of busses");
-                    for(int count = 0; count < bussList.Count-1; count++)
-                    {
-                        output.WriteLine("Buss number: " + bussList[count].GetNum());
-                        output.WriteLine("At or has left stop number: " + (bussList[count].getStop()).Getnum());
-                        output.WriteLine("In transit between stops? " + bussList[count].getTravel());
-                        
-                    }
-                    output.WriteLine("--------------------------");
-                    output.WriteLine("Current state of route");
-                    output.WriteLine("--------------------------");
-                    for (int count = 0; count < route.Length; count++)
-                    {
-                        output.WriteLine("Stop number: " + route[count].Getnum());
-                        output.WriteLine("Number of busses at stop: " + route[count].stop.getBussNum());
-                        output.WriteLine("Number of waiting passengers at stop: " + route[count].stop.getPassNum());
-                        output.WriteLine("--------------------------");
-                    }
-                    output.WriteLine("======================");
-                    counter++;
+                    line += count + "    ";
                 }
-            }   
+                output.WriteLine(line);
+            }
+                while (controller.getState() == false) // wait for simulation to begin
+                {
+                    Thread.Sleep(1);
+                }
+            while(controller.getState()==true) // iterate until end of simulation, then conclude current iteration
+            {
+                for(int count = 0; count < bussList.Count; count++)
+                {
+
+                }
+            }
         }
 
     }
