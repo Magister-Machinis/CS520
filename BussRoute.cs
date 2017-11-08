@@ -91,23 +91,53 @@ namespace SimulationCore
 
             using (StreamWriter output = File.CreateText(filepath))
             {
+                output.WriteLine("- = idle, += active");
                 string line = "| ";
                 for (int count = 0; count < bussList.Count; count++)
                 {
-                    line += count + "    ";
+                    line += count + "     ";
                 }
+                line += " |";
                 output.WriteLine(line);
-            }
+
                 while (controller.getState() == false) // wait for simulation to begin
                 {
                     Thread.Sleep(1);
                 }
-            while(controller.getState()==true) // iterate until end of simulation, then conclude current iteration
-            {
-                for(int count = 0; count < bussList.Count; count++)
+                while (controller.getState() == true) // iterate until end of simulation, then conclude current iteration
                 {
+                    line = "| ";
+                    for (int count = 0; count < bussList.Count; count++)
+                    {
+                        if (bussList[count].getTravel() == true)
+                        {
+                            line += "+    ";
+                        }
+                        else
+                        {
+                            line += "-    ";
+                        }
 
+                        line += "|";
+                        output.WriteLine(line);
+                    }
                 }
+
+                
+                int[] numnums = new int[bussList.Count];
+                for (int count = 0; count < bussList.Count; count++)
+                {
+                    for (int innercount = 0; innercount <= count; innercount++)
+                    {
+                        numnums[count] += bussList[innercount].getBurst();
+                    }
+                }
+                int avg = 0;
+                for (int count = 0; count < numnums.Length; count++)
+                {
+                    avg += numnums[count] / numnums.Length;
+                }
+                output.WriteLine("Average time to completion is: "+avg);
             }
         }
 
