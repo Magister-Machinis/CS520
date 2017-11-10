@@ -57,8 +57,7 @@ namespace SimulationCore
                 /* 
                  * auto-assign simulation length uses the number of ticks it 
                  * takes for the user to decide to use this option as its value, 
-                 * using crypto grade randomness later for spice
-                 * 
+                 * using crypto grade randomness later for spice 
                  */
             }
 
