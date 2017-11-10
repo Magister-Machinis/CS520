@@ -13,6 +13,7 @@ namespace SimulationCore
         int Bussnum;
         Toolkit Tools = new Toolkit();
         bool intransit;
+        bool asleep;
         int Bursttime;
         int Arrivaltime;
 
@@ -21,9 +22,27 @@ namespace SimulationCore
             passenger = new List<Rider>();
             Bussnum = busnum;
             intransit = false;
+            asleep = false;
             Bursttime = bursttime;
             Arrivaltime = arrivaltime;
 
+        }
+
+        public bool getSleep()
+        {
+            return asleep;
+        }
+
+        public void ToggleSleep()
+        {
+            if(asleep == true)
+            {
+                asleep = false;
+            }
+            else
+            {
+                asleep = true;
+            }
         }
         public int getBurst()
         {
@@ -117,21 +136,25 @@ namespace SimulationCore
             {
                 Thread.Sleep(1);
             }
-            for(int count = 0; count < this.getArrival(); count++) //postpones start for selected arival time
+            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+            for (int count = 0; count < this.getArrival(); count++) //postpones start for selected arival time
             {
                 Thread.Sleep(1);
             }
-            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+           
+            this.ToggleSleep();
             while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this item is the one at the front of the queue, sleeps a time if not
             {
                 Thread.Sleep(1);
             }
+            this.ToggleSleep();
             this.toggleTransit(); // marks item as active for the recorder
             for (int count = 0; count < this.getBurst(); count++) //simulates time spent using critical region
             {
                 Thread.Sleep(1);
             }
             this.toggleTransit();
+            
             this.currentstop.stop.popBuss(); // gets out of the way for the next setup
             /* code from previous project
             Console.WriteLine(this.GetNum() + " Buss has begun!");

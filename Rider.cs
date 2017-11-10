@@ -6,7 +6,7 @@ namespace SimulationCore
     class Rider //generic holder for riders and whether they are on a buss or waiting
     {
         bool riding;
-        int attentionspan;
+        long attentionspan;
 
         public Rider()
         {
@@ -15,7 +15,7 @@ namespace SimulationCore
             attentionspan = (((Tool.ReallyRandom()) % 51)+50); //how likely this user is to get on or off a buss, restricting it to 51%-100% so that they are inclined to get on
         }
         
-        public int getattention()
+        public long getattention()
         {
             return attentionspan;
         }
@@ -57,7 +57,7 @@ namespace SimulationCore
                         Console.WriteLine("Adding a waiting rider to stop: " + route[count].Getnum());
                     }
                 }
-                Thread.Sleep(Tool.ReallyRandom()%60000);
+                Thread.Sleep(Convert.ToInt32(Tool.ReallyRandom()%60000));
                 
             }
         }

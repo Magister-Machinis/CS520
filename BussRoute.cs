@@ -91,36 +91,44 @@ namespace SimulationCore
 
             using (StreamWriter output = File.CreateText(filepath))
             {
-                output.WriteLine("- = idle, += active");
-                string line = "| ";
+                output.WriteLine("N= Not running, W= Waiting, A= Active");
+                string line = "|";
                 for (int count = 0; count < bussList.Count; count++)
                 {
-                    line += count + "     ";
+                    line += "  "+count + "  ";
                 }
-                line += " |";
+                line += "|";
                 output.WriteLine(line);
 
                 while (controller.getState() == false) // wait for simulation to begin
                 {
                     Thread.Sleep(1);
                 }
+                int counter = 0;
                 while (controller.getState() == true) // iterate until end of simulation, then conclude current iteration
                 {
-                    line = "| ";
+                    line = "Time: " + counter+"|";
+                    counter += 5;
                     for (int count = 0; count < bussList.Count; count++)
                     {
                         if (bussList[count].getTravel() == true)
                         {
-                            line += "+    ";
+                            line += "  A  ";
                         }
-                        else
+                        else if (bussList[count].getSleep() == true)
                         {
-                            line += "-    ";
+                            line += "  W  ";
+                        }
+                        else if (bussList[count].getTravel() == false & bussList[count].getSleep() == false)
+                        {
+                            line += "  N  ";
                         }
 
                         line += "|";
-                        output.WriteLine(line);
+                        
                     }
+                    output.WriteLine(line);
+                    Thread.Sleep(5);
                 }
 
                 

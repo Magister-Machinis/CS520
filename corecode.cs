@@ -43,8 +43,8 @@ namespace SimulationCore
             int footTraffic = 45; // percent chance of a new passenger appearing at a stop
             int NumberofBusses = 3; // how many busses are going to be in this simulation
 
-            int[] arrivaltimes = { 0, 4, 10 };
-            int[] burstimes = { 80, 40, 10 }; //simple holders for the arrivaltimes and burstimes of the processes being initialized
+            int[] arrivaltimes = { 0, 0, 0 };
+            int[] burstimes = { 10, 40, 80}; //simple holders for the arrivaltimes and burstimes of the processes being initialized
             //Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             //numberofrounds = Convert.ToDouble(Console.ReadLine());
             littletimer.Stop();
@@ -79,7 +79,7 @@ namespace SimulationCore
             //Console.WriteLine("Waiting " + waitnum / 1000 + " seconds to allow stops to populate a bit");
            //Thread.Sleep(waitnum);
             Console.WriteLine("Begining to activate busses");
-            for (int buscount = 0; buscount < bussList.Count - 1; buscount++) //sending off each buss as a thread
+            for (int buscount = 0; buscount < bussList.Count; buscount++) //sending off each buss as a thread
             {
                 Console.WriteLine("spinning off buss number " + bussList[buscount].GetNum());
                 Thread bussymcbussface = new Thread(() => bussList[buscount].BussDriver(numberofrounds,controller));
