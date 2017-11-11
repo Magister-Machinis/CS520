@@ -52,13 +52,7 @@
     <Compile Include="Toolkit.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="5.3.zip" />
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="5.3-A-FCFS.txt" />
-    <Content Include="5.3-B-FCFS.txt" />
-    <Content Include="5.3-C-FCFS.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

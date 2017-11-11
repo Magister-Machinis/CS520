@@ -16,6 +16,7 @@ namespace SimulationCore
         bool asleep;
         int Bursttime;
         int Arrivaltime;
+        int Waittime;
 
         public Buss(int busnum, int bursttime, int arrivaltime)
         {
@@ -25,7 +26,12 @@ namespace SimulationCore
             asleep = false;
             Bursttime = bursttime;
             Arrivaltime = arrivaltime;
+            Waittime = 0;
 
+        }
+        public int getWait()
+        {
+            return Waittime;
         }
 
         public bool getSleep()
@@ -146,6 +152,7 @@ namespace SimulationCore
             while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this item is the one at the front of the queue, sleeps a time if not
             {
                 Thread.Sleep(1);
+                Waittime++;
             }
             this.ToggleSleep();
             this.toggleTransit(); // marks item as active for the recorder

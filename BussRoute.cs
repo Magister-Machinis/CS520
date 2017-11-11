@@ -137,7 +137,7 @@ namespace SimulationCore
                 {
                     for (int innercount = 0; innercount <= count; innercount++)
                     {
-                        numnums[count] += bussList[innercount].getBurst();
+                        numnums[count] += bussList[innercount].getBurst() + bussList[innercount].getWait();
                     }
                 }
                 int avg = 0;
