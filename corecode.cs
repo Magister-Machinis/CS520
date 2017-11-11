@@ -43,7 +43,7 @@ namespace SimulationCore
             int footTraffic = 45; // percent chance of a new passenger appearing at a stop
             int NumberofBusses = 3; // how many busses are going to be in this simulation
 
-            int[] arrivaltimes = { 0, , 0 };
+            int[] arrivaltimes = { 0, 0, 0 };
             int[] burstimes = { 10, 40, 80}; //simple holders for the arrivaltimes and burstimes of the processes being initialized
             //Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             //numberofrounds = Convert.ToDouble(Console.ReadLine());
