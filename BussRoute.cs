@@ -108,7 +108,7 @@ namespace SimulationCore
                 while (controller.getState() == true) // iterate until end of simulation, then conclude current iteration
                 {
                     line = "Time: " + counter+"|";
-                    counter += 5;
+                    counter += 1;
                     for (int count = 0; count < bussList.Count; count++)
                     {
                         if (bussList[count].getTravel() == true)
@@ -128,7 +128,7 @@ namespace SimulationCore
                         
                     }
                     output.WriteLine(line);
-                    Thread.Sleep(5);
+                    Thread.Sleep(1);
                 }
 
                 
@@ -137,8 +137,13 @@ namespace SimulationCore
                 {
                     for (int innercount = 0; innercount <= count; innercount++)
                     {
-                        numnums[count] += bussList[innercount].getBurst();
+                        numnums[count] += (bussList[innercount].getBurst() + bussList[innercount].getWait());
                     }
+                    output.WriteLine("Process " + count + ":");
+                    output.WriteLine("  Burst Time: " + bussList[count].getBurst());
+                    output.WriteLine("  Turnaround Time: " + (bussList[count].getBurst() + bussList[count].getWait()));
+                    output.WriteLine("  Wait Time: " + bussList[count].getWait());
+
                 }
                 int avg = 0;
                 for (int count = 0; count < numnums.Length; count++)

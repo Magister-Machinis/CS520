@@ -43,8 +43,8 @@ namespace SimulationCore
             int footTraffic = 45; // percent chance of a new passenger appearing at a stop
             int NumberofBusses = 3; // how many busses are going to be in this simulation
 
-            int[] arrivaltimes = { 0, 0, 0 };
-            int[] burstimes = { 10, 40, 80}; //simple holders for the arrivaltimes and burstimes of the processes being initialized
+            int[] arrivaltimes = new int[5];
+            int[] burstimes = { 1,5,10,2,1}; //simple holders for the arrivaltimes and burstimes of the processes being initialized
             //Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
             //numberofrounds = Convert.ToDouble(Console.ReadLine());
             littletimer.Stop();
@@ -63,13 +63,14 @@ namespace SimulationCore
 
             Console.WriteLine("Running " + numberofrounds + " rounds of simulation with a route of " + NumberofStops + " stops.");
 
-            for (int count = 0; count < NumberofBusses; count++) //adding busses to the starting line
+            for (int count = 0; count < burstimes.Length; count++) //adding busses to the starting line
             {
                 Buss newbuss = new Buss(count, burstimes[count],arrivaltimes[count]);
                 newbuss.setStop(route[0]);
                 
                 bussList.Add(newbuss);
                 Console.WriteLine("add buss " + newbuss.GetNum() + " to list");
+                Thread.Sleep(1);
             }
             //Thread populating = new Thread(() => Rider.Repopulate(footTraffic, route)); //activating the background thread that adds in people
             //populating.Start();

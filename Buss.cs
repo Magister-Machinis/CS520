@@ -16,6 +16,7 @@ namespace SimulationCore
         bool asleep;
         int Bursttime;
         int Arrivaltime;
+        int WaitTime;
 
         public Buss(int busnum, int bursttime, int arrivaltime)
         {
@@ -25,8 +26,15 @@ namespace SimulationCore
             asleep = false;
             Bursttime = bursttime;
             Arrivaltime = arrivaltime;
+            WaitTime = 0;
 
         }
+
+        public int getWait()
+        {
+            return WaitTime;
+        }
+           
 
         public bool getSleep()
         {
@@ -132,11 +140,13 @@ namespace SimulationCore
 
         public void BussDriver(double NumberofRounds, Controller controller) //function acts as the holder for each thread
         {
-            while(controller.getState() == false) //waiting for the simulation to start
+            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+            while (controller.getState() == false) //waiting for the simulation to start
             {
                 Thread.Sleep(1);
             }
-            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+           
+            
             for (int count = 0; count < this.getArrival(); count++) //postpones start for selected arival time
             {
                 Thread.Sleep(1);
@@ -146,6 +156,7 @@ namespace SimulationCore
             while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this item is the one at the front of the queue, sleeps a time if not
             {
                 Thread.Sleep(1);
+                WaitTime++;
             }
             this.ToggleSleep();
             this.toggleTransit(); // marks item as active for the recorder
