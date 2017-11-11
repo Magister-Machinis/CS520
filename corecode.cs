@@ -30,77 +30,19 @@ namespace SimulationCore
             Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
             bigtimer.Start();
             littletimer.Start();
-            Toolkit Tools = new Toolkit();
+            Toolkit ExpoTools = new Toolkit(2);
+            Toolkit UniTools = new Toolkit(3);
+            ProcessSim[] Proclist = new ProcessSim[10];
+            Thread[] threadlist = new Thread[Proclist.Length];
+            Circuit circuit = new Circuit();
             Controller controller = new Controller();
-            List<Buss> bussList = new List<Buss>();
-            List<Thread> threadlist = new List<Thread>();
-            int NumberofStops =1; //hardcoding this for this version
-           // Console.WriteLine("Input number of stops in the route to be simulated: ");
-            //NumberofStops = Convert.ToInt32(Console.ReadLine());
-           // Console.WriteLine(NumberofStops);
-            BussRoute.RouteWrapper[] route = BussRoute.Ringify(NumberofStops); // wont actually do much in this version
-            double numberofrounds = 1;//hardcoding it for this variant
-            int footTraffic = 45; // percent chance of a new passenger appearing at a stop
-            int NumberofBusses = 3; // how many busses are going to be in this simulation
-
-            int[] arrivaltimes = new int[5];
-            int[] burstimes = { 1,5,10,2,1}; //simple holders for the arrivaltimes and burstimes of the processes being initialized
-            //Console.WriteLine("input number of rounds of simulation, or enter 0 for autocalculation of rounds (may be long!)");
-            //numberofrounds = Convert.ToDouble(Console.ReadLine());
-            littletimer.Stop();
-
-            string path = Path.GetFullPath(".\\output.txt");
-
-            if (numberofrounds == 0)
+            for (int count = 0; count < Proclist.Length; count++)
             {
-                numberofrounds = Convert.ToDouble(littletimer.ElapsedTicks);
-                /* 
-                 * auto-assign simulation length uses the number of ticks it 
-                 * takes for the user to decide to use this option as its value, 
-                 * using crypto grade randomness later for spice 
-                 */
+                Proclist[count] = new ProcessSim(ExpoTools, (120000 + (UniTools.ReallyRandom() % 120000))); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                threadlist[count] = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
+                threadlist[count].Start();
             }
-
-            Console.WriteLine("Running " + numberofrounds + " rounds of simulation with a route of " + NumberofStops + " stops.");
-
-            for (int count = 0; count < burstimes.Length; count++) //adding busses to the starting line
-            {
-                Buss newbuss = new Buss(count, burstimes[count],arrivaltimes[count]);
-                newbuss.setStop(route[0]);
-                
-                bussList.Add(newbuss);
-                Console.WriteLine("add buss " + newbuss.GetNum() + " to list");
-                Thread.Sleep(1);
-            }
-            //Thread populating = new Thread(() => Rider.Repopulate(footTraffic, route)); //activating the background thread that adds in people
-            //populating.Start();
-            Thread snapshot = new Thread(() => BussRoute.Outputtofile(path, route, bussList,controller)); //activating the background thread that records all of this
-            snapshot.Start();
-            Thread roundrobin = new Thread(() => { BussRoute.RoundnRound(bussList, controller); });
-            roundrobin.Start();
-           //int waitnum = Tools.ReallyRandom() % 50000;
-            //Console.WriteLine("Waiting " + waitnum / 1000 + " seconds to allow stops to populate a bit");
-           //Thread.Sleep(waitnum);
-            Console.WriteLine("Begining to activate busses");
-            for (int buscount = 0; buscount < bussList.Count; buscount++) //sending off each buss as a thread
-            {
-                Console.WriteLine("spinning off buss number " + bussList[buscount].GetNum());
-                Thread bussymcbussface = new Thread(() => bussList[buscount].BussDriver(numberofrounds,controller));
-                threadlist.Add(bussymcbussface);
-                bussymcbussface.Start();
-                Console.WriteLine("done");
-                //Thread.Sleep(500); //so that the threads have some space between them
-
-            }
-            controller.toggleState(); //starts simulation
-
-
-            for (int threadcount = 0; threadcount < threadlist.Count; threadcount++) //waiting on main threads to complete
-            {
-                threadlist[threadcount].Join();
-            }
-            controller.toggleState(); //signals recorder thread to conclude
-           
+            Thread recordthread
 
 
 
@@ -113,31 +55,38 @@ namespace SimulationCore
         }
 
     }
-    class Controller //generic holder for inter-process flag values and such
+    class Recorder
     {
-        bool StartStop;
-
-        public Controller()
+        string filepath;
+        public Recorder()
         {
-            StartStop = false;
+            filepath = @".\output.txt";
+            filepath = Path.GetFullPath(filepath);
         }
+
+        public void paperbackwriter(Controller controller)
+        {
+            
+            using (StreamWriter output = File.CreateText(filepath))
+            {
+                while (controller.getState() == false)
+                {
+                    Thread.Sleep(1);
+                }
+                DateTime timer = DateTime.Now;
+                output.WriteLine("Begining State record at  "+timer);
+
+                while (controller.getState() == true)
+                {
+
+                }
                 
-        public bool getState()
-        {
-            return StartStop;
-        }
 
-        public void toggleState()
-        {
-            if (StartStop == false)
-            {
-                StartStop = true;
-            }
-            else
-            {
-                StartStop = false;
             }
         }
     }
 }
+
+     
+
  

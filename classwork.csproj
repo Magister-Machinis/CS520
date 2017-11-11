@@ -43,12 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buss.cs" />
-    <Compile Include="BussRoute.cs" />
-    <Compile Include="BussStop.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="corecode.cs" />
+    <Compile Include="ProcessSim.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rider.cs" />
     <Compile Include="Toolkit.cs" />
   </ItemGroup>
   <ItemGroup>
