@@ -76,6 +76,8 @@ namespace SimulationCore
             //populating.Start();
             Thread snapshot = new Thread(() => BussRoute.Outputtofile(path, route, bussList,controller)); //activating the background thread that records all of this
             snapshot.Start();
+            Thread roundrobin = new Thread(() => { BussRoute.RoundnRound(bussList, controller); });
+            roundrobin.Start();
            //int waitnum = Tools.ReallyRandom() % 50000;
             //Console.WriteLine("Waiting " + waitnum / 1000 + " seconds to allow stops to populate a bit");
            //Thread.Sleep(waitnum);

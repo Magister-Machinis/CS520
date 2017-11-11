@@ -34,6 +34,10 @@ namespace SimulationCore
         {
             return WaitTime;
         }
+        public void TickWait( int num = 1)
+        {
+            WaitTime+=num;
+        }
            
 
         public bool getSleep()
@@ -140,33 +144,41 @@ namespace SimulationCore
 
         public void BussDriver(double NumberofRounds, Controller controller) //function acts as the holder for each thread
         {
-            this.currentstop.stop.addBuss(this); // adds this item to the waiting queue once it arrives
+             
             while (controller.getState() == false) //waiting for the simulation to start
             {
                 Thread.Sleep(1);
             }
-           
+            bool endflag = false;
+            int count = 0;
+            while (controller.getState() == true & endflag == false)
+            {
+                
+                while (this.getSleep() == false) // thread waits when control is not on it
+                {
+
+
+                    if (this.getTravel() == true)
+                    {
+                        this.toggleTransit();// marks item as inactive for the recorder
+                    }
+                    Thread.Sleep(1);
+
+                }
+                if (this.getTravel() == false)
+                {
+                    this.toggleTransit();// marks item as active for the recorder
+                }
+                if(this.getBurst() <  count)
+                {
+                    endflag = true;
+                }
+                
+                count++;
+
+            }
             
-            for (int count = 0; count < this.getArrival(); count++) //postpones start for selected arival time
-            {
-                Thread.Sleep(1);
-            }
-           
-            this.ToggleSleep();
-            while ((currentstop.stop.getBuss().GetNum()) != this.Bussnum) //checks to see if this item is the one at the front of the queue, sleeps a time if not
-            {
-                Thread.Sleep(1);
-                WaitTime++;
-            }
-            this.ToggleSleep();
-            this.toggleTransit(); // marks item as active for the recorder
-            for (int count = 0; count < this.getBurst(); count++) //simulates time spent using critical region
-            {
-                Thread.Sleep(1);
-            }
-            this.toggleTransit();
-            
-            this.currentstop.stop.popBuss(); // gets out of the way for the next setup
+            // gets out of the way for the next setup
             /* code from previous project
             Console.WriteLine(this.GetNum() + " Buss has begun!");
             for (double roundcount = 0; roundcount < NumberofRounds; roundcount++) //main routine for this bus on the route

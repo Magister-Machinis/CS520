@@ -84,6 +84,35 @@ namespace SimulationCore
             return Ringaround;
         }
 
+
+        public static void RoundnRound(List<Buss> bussList, Controller controller) //controls roundrobining of threads
+        {
+            int quanta = 1;
+            while (controller.getState() == false) //waiting for simulation to start
+            {
+                Thread.Sleep(1);
+            }
+            while (controller.getState() == true)
+            {
+                for (int count = 0; count < bussList.Count; count++)
+                {
+
+                    bussList[count].ToggleSleep();
+                    Thread.Sleep(quanta);
+                    bussList[count].ToggleSleep();
+                    
+                    for(int precount = 0; precount < count; precount++) //simulating wait times for all other threads
+                    {
+                        bussList[precount].TickWait();
+                    }
+                    for(int postcount = count+1;postcount<bussList.Count; postcount++)
+                    {
+                        bussList[postcount].TickWait();
+                    }
+
+                }
+            }
+        }
         public static void Outputtofile(string filepath, BussRoute.RouteWrapper[] route, List<Buss> bussList, Controller controller) //periodically records the state of the route to file
         {
 
@@ -111,13 +140,13 @@ namespace SimulationCore
                     counter += 1;
                     for (int count = 0; count < bussList.Count; count++)
                     {
-                        if (bussList[count].getTravel() == true)
-                        {
-                            line += "  A  ";
-                        }
-                        else if (bussList[count].getSleep() == true)
+                        if (bussList[count].getSleep() == true)
                         {
                             line += "  W  ";
+                        }
+                        else if (bussList[count].getTravel() == true)
+                        {
+                            line += "  A  ";
                         }
                         else if (bussList[count].getTravel() == false & bussList[count].getSleep() == false)
                         {
