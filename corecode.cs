@@ -145,7 +145,7 @@ namespace SimulationCore
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);
                 output.WriteLine("Average turnaround is: " + turnarounds);
-                output.WriteLine("CPU utilization is " + (cpucount / turnarounds));
+                output.WriteLine("CPU utilization is " + (cpucount / (turnarounds*proclist.Length)));
                 output.WriteLine("Simulation Time " + rundurationraw);
                 
 
