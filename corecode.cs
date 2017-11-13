@@ -13,7 +13,7 @@
  */
 
 using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -26,23 +26,46 @@ namespace SimulationCore
 
         static void Main(string[] args)
         {
+            
             Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
             Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
             bigtimer.Start();
             littletimer.Start();
+            Console.WriteLine("initializng exponential toolkit");
             Toolkit ExpoTools = new Toolkit(2);
+            Console.WriteLine("initializng uniform toolkit");
             Toolkit UniTools = new Toolkit(3);
             ProcessSim[] Proclist = new ProcessSim[10];
-            Thread[] threadlist = new Thread[Proclist.Length];
+            Thread[] threadlist = new Thread[10];
             Circuit circuit = new Circuit();
             Controller controller = new Controller();
             for (int count = 0; count < Proclist.Length; count++)
             {
-                Proclist[count] = new ProcessSim(ExpoTools, (120000 + (UniTools.ReallyRandom() % 120000))); //gives a runtime  between 2 and 4 minutes with uniform distribution
-                threadlist[count] = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
-                threadlist[count].Start();
+                Console.WriteLine("Creating process "+count);
+                double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
+                Console.WriteLine("Run time will be " + temp);
+                Proclist[count] = new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
             }
-            Thread recordthread
+            for (int count = 0; count < Proclist.Length; count++)
+            {
+                Console.WriteLine("Launcing process" +count);
+                Thread temp = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
+                threadlist[count] = temp;
+                temp.Start();
+                Thread.Sleep(1);
+            }
+        Recorder recorder = new Recorder();
+            Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
+            recordthread.Start();
+
+            controller.toggleState();
+            for (int count = 0; count < Proclist.Length; count++)
+            {
+                Console.WriteLine("Waiting on process" +count);
+                threadlist[count].Join();
+            }
+            controller.toggleState();
+            recordthread.Join();
 
 
 
@@ -64,23 +87,58 @@ namespace SimulationCore
             filepath = Path.GetFullPath(filepath);
         }
 
-        public void paperbackwriter(Controller controller)
+        public void paperbackwriter(Controller controller, ProcessSim[] proclist)
         {
-            
+            int cpucount = 0;
+            int usecount = 0;
             using (StreamWriter output = File.CreateText(filepath))
             {
                 while (controller.getState() == false)
                 {
                     Thread.Sleep(1);
                 }
-                DateTime timer = DateTime.Now;
-                output.WriteLine("Begining State record at  "+timer);
+                Stopwatch runtime = new Stopwatch();
+
+                output.WriteLine("Begining State record at  "+ DateTime.Now);
 
                 while (controller.getState() == true)
                 {
-
+                    usecount++;
+                    output.WriteLine(" ");
+                    output.WriteLine("Current timestamp: " + DateTime.Now);
+                    for (int count = 0; count < proclist.Length; count ++)
+                    {
+                        if(proclist[count].currentqueue == "CPU")
+                        {
+                            cpucount++;
+                        }
+                        output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
+                    }
+                    Thread.Sleep(5);
                 }
-                
+                output.WriteLine(" ");
+                output.WriteLine("CPU utilization is "+(float)(cpucount / usecount));
+                runtime.Stop();
+                TimeSpan rundurationraw = runtime.Elapsed;
+                double runtimes = 0;
+                double waittimes = 0;
+                double turnarounds = 0;
+                for(int count = 0; count < proclist.Length; count++)
+                {
+                    output.WriteLine("Process " + count);
+                    output.WriteLine("    Execution time is: " + proclist[count].runlength);
+                    output.WriteLine("    Wait time is " + proclist[count].waittime);
+                    output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
+
+                    runtimes += (proclist[count].runlength / proclist.Length);
+                    waittimes += (proclist[count].waittime / proclist.Length);
+                    turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
+                }
+                output.WriteLine("Average run time is: " + runtimes);
+                output.WriteLine("Average wait time is: " + waittimes);
+                output.WriteLine("Average turnaround is: " + turnarounds);
+                output.WriteLine("Simulation Time " + rundurationraw);
+
 
             }
         }

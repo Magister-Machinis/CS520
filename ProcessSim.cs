@@ -15,15 +15,16 @@
 using System.Threading;
 using GenericTools;
 using System.Collections.Generic;
+using System;
 
 namespace SimulationCore
 {
     class Circuit
     {
-        List<ProcessSim> Readyqueue;
-        List<ProcessSim> IOqueue;
-        List<ProcessSim> IOspace;
-        List<ProcessSim> CPUspace;
+        public List<ProcessSim> Readyqueue;
+        public List<ProcessSim> IOqueue;
+        public List<ProcessSim> IOspace;
+        public List<ProcessSim> CPUspace;
 
         public Circuit()
         {
@@ -38,28 +39,86 @@ namespace SimulationCore
     {
         public string currentqueue;
         public bool incrit;
-        public long identnum;
-        public long runlength;
-        public ProcessSim(Toolkit tool, long runlenght)
+        public double identnum;
+        public double runlength;
+        public double runtime;
+        public double waittime;
+        public ProcessSim(Toolkit tool,  double runlenght)
         {
             incrit = false;
             currentqueue = "start";
             identnum = tool.ReallyRandom();
             runlength = runlenght;
+            runtime = 0;
+            waittime = 0;
         }
 
-        public void Driver(Circuit circuit, Toolkit tool, Controller controller)
+        public void Driver(Circuit circuit, Toolkit expotool, Controller controller)
         {
-            long startdelay = tool.ReallyRandom() % 60;
+
             while (controller.getState() == false)
             {
                 Thread.Sleep(1);
             }
-            for(int count = 0; count < startdelay; count++) // randomizing starts a bit to prevent possible collisions
+            DateTime starttime = DateTime.Now;
+            
+
+            while (runtime < runlength)
+            {
+                
+                ReadyandCPU(circuit, expotool);
+                circuit.CPUspace.Clear();
+                IOsequence(circuit, expotool);
+                circuit.IOqueue.Clear();
+            }
+
+        }
+
+        void IOsequence(Circuit circuit, Toolkit expotool)
+        {
+            circuit.IOqueue.Add(this);
+            this.currentqueue = "IO Queue";
+            while(circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
             {
                 Thread.Sleep(1);
+                this.waittime++;
             }
+            while(circuit.IOspace.Count != 0) //waiting for IO device to become available
+            {
+                Thread.Sleep(1);
+                this.waittime++;
+            }
+            circuit.IOspace.Add(this);
+            circuit.IOqueue.Remove(this);
+            this.currentqueue = "IO space";
+            Thread.Sleep(60);
+            this.runtime += 60;
+
+        
         }
+        void ReadyandCPU(Circuit circuit, Toolkit expotool)
+        {
+            circuit.Readyqueue.Add(this);
+            this.currentqueue = "Ready";
+            while (circuit.Readyqueue[0].identnum != this.identnum) //waiting in line on ReadyQueue
+            {
+                Thread.Sleep(1);
+                this.waittime++;
+            }
+            while (circuit.CPUspace.Count != 0) //waiting for cpu to become available
+            {
+                Thread.Sleep(1);
+                this.waittime++;
+            }
+            circuit.CPUspace.Add(this);
+            circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
+            this.currentqueue = "CPU";
+            int sleeptime = Convert.ToInt32(expotool.ReallyRandom() % 2147483647);
+            Thread.Sleep(sleeptime); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
+            runtime += sleeptime;
+
+        }
+       
     }
 }
  
