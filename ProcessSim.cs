@@ -100,16 +100,32 @@ namespace SimulationCore
         {
             circuit.Readyqueue.Add(this);
             this.currentqueue = "Ready";
-            while (circuit.Readyqueue[0].identnum != this.identnum) //waiting in line on ReadyQueue
+            
+            double smallnum = circuit.Readyqueue[0].runlength;
+            while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
             {
+                Console.WriteLine("Process " + this.identnum + " entering ready queue");
+            
+                int queuesize = circuit.Readyqueue.Count;
+                for (int count =0; count < queuesize; count++)
+                {
+                    if(smallnum > circuit.Readyqueue[count].runlength)
+                    {
+                        smallnum = circuit.Readyqueue[count].runlength;
+                    }
+                    queuesize = circuit.Readyqueue.Count;
+
+                }
                 Thread.Sleep(1);
                 this.waittime++;
+                
             }
             while (circuit.CPUspace.Count != 0) //waiting for cpu to become available
             {
                 Thread.Sleep(1);
                 this.waittime++;
             }
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue");
             circuit.CPUspace.Add(this);
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";

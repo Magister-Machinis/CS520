@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using GenericTools;
+using System.Collections.Generic;
 
 namespace SimulationCore
 {
@@ -37,6 +38,7 @@ namespace SimulationCore
                 Console.WriteLine("initializng exponential toolkit");
                 Toolkit ExpoTools = new Toolkit(2);
 
+                List<ProcessSim> rawProclist = new List<ProcessSim>();
                 ProcessSim[] Proclist = new ProcessSim[10];
                 Thread[] threadlist = new Thread[10];
                 Circuit circuit = new Circuit();
@@ -46,8 +48,24 @@ namespace SimulationCore
                     Console.WriteLine("Creating process " + count);
                     double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
                     Console.WriteLine("Run time will be " + temp);
-                    Proclist[count] = new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                    rawProclist.Add(new ProcessSim(ExpoTools, temp)); //gives a runtime  between 2 and 4 minutes with uniform distribution
                 }
+                int counter = 0;
+                while(rawProclist.Count > 0) //basic insertion sort to organize smallest for initial launch
+                {
+                    
+                    ProcessSim smallest = rawProclist[0]; //just to initialize
+                    for (int count = 0; count < rawProclist.Count; count++)
+                    {
+                        if (smallest.runlength > rawProclist[count].runlength)
+                        {
+                            smallest = rawProclist[count];
+                        }
+                        Proclist[counter] = smallest;
+                        rawProclist.Remove(smallest);
+                    }
+                }
+
                 for (int count = 0; count < Proclist.Length; count++)
                 {
                     Console.WriteLine("Launcing process" + count);
@@ -81,6 +99,7 @@ namespace SimulationCore
             catch(Exception e)
             {
                 Console.WriteLine(e); //generic crash handler for debugging
+                Console.ReadLine();
             }
         }
 
