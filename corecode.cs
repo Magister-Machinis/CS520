@@ -46,7 +46,7 @@ namespace SimulationCore
                 for (int count = 0; count < Proclist.Length; count++)
                 {
                     Console.WriteLine("Creating process " + count);
-                    double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
+                    double temp = (12 + ((UniTools.ReallyRandom()) % 12))* 10000;
                     Console.WriteLine("Run time will be " + temp);
                     rawProclist.Add(new ProcessSim(ExpoTools, temp)); //gives a runtime  between 2 and 4 minutes with uniform distribution
                 }

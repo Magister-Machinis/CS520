@@ -78,7 +78,9 @@ namespace SimulationCore
         {
             circuit.IOqueue.Add(this);
             this.currentqueue = "IO Queue";
-            while(circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
+            Console.WriteLine("Process " + this.identnum + " entering io queue");
+            
+            while (circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
             {
                 Thread.Sleep(1);
                 this.waittime++;
@@ -91,6 +93,7 @@ namespace SimulationCore
             circuit.IOspace.Add(this);
             circuit.IOqueue.Remove(this);
             this.currentqueue = "IO space";
+            Console.WriteLine("Process " + this.identnum + " entering io space");
             Thread.Sleep(60);
             this.runtime += 60;
 
@@ -105,7 +108,7 @@ namespace SimulationCore
             while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
             {
                 Console.WriteLine("Process " + this.identnum + " entering ready queue");
-            
+                smallnum = circuit.Readyqueue[0].runlength;
                 int queuesize = circuit.Readyqueue.Count;
                 for (int count =0; count < queuesize; count++)
                 {
@@ -116,6 +119,7 @@ namespace SimulationCore
                     queuesize = circuit.Readyqueue.Count;
 
                 }
+                 
                 Thread.Sleep(1);
                 this.waittime++;
                 
@@ -131,6 +135,7 @@ namespace SimulationCore
             this.currentqueue = "CPU";
             int sleeptime = Convert.ToInt32(expotool.ReallyRandom() % 2147483647);
             Thread.Sleep(sleeptime); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
             runtime += sleeptime;
 
         }
