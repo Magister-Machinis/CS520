@@ -72,13 +72,15 @@ namespace SimulationCore
                 circuit.IOspace.Clear();
             }
             this.currentqueue = "Finished";
+            Console.WriteLine("Process " + this.identnum + " is finished");
         }
 
         void IOsequence(Circuit circuit, Toolkit expotool)
         {
             circuit.IOqueue.Add(this);
             this.currentqueue = "IO Queue";
-            while(circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
+            Console.WriteLine("Process " + this.identnum + " entering io queue");
+            while (circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
             {
                 Thread.Sleep(1);
                 this.waittime++;
@@ -91,6 +93,7 @@ namespace SimulationCore
             circuit.IOspace.Add(this);
             circuit.IOqueue.Remove(this);
             this.currentqueue = "IO space";
+            Console.WriteLine("Process " + this.identnum + " entering io space");
             Thread.Sleep(60);
             this.runtime += 60;
 
@@ -98,6 +101,7 @@ namespace SimulationCore
         }
         void ReadyandCPU(Circuit circuit, Toolkit expotool)
         {
+            Console.WriteLine("Process " + this.identnum + " entering ready queue");
             circuit.Readyqueue.Add(this);
             this.currentqueue = "Ready";
             while (circuit.Readyqueue[0].identnum != this.identnum) //waiting in line on ReadyQueue
@@ -113,7 +117,9 @@ namespace SimulationCore
             circuit.CPUspace.Add(this);
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";
+            
             int sleeptime = Convert.ToInt32(expotool.ReallyRandom() % 2147483647);
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
             Thread.Sleep(sleeptime); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
             runtime += sleeptime;
 
