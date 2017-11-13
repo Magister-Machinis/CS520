@@ -27,8 +27,7 @@ namespace SimulationCore
 
         static void Main(string[] args)
         {
-            try
-            {
+            
                 Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
                 Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
                 bigtimer.Start();
@@ -48,32 +47,19 @@ namespace SimulationCore
                     Console.WriteLine("Creating process " + count);
                     double temp = (12 + ((UniTools.ReallyRandom()) % 12))* 10000;
                     Console.WriteLine("Run time will be " + temp);
-                    rawProclist.Add(new ProcessSim(ExpoTools, temp)); //gives a runtime  between 2 and 4 minutes with uniform distribution
-                }
-                int counter = 0;
-                while(rawProclist.Count > 0) //basic insertion sort to organize smallest for initial launch
-                {
-                    
-                    ProcessSim smallest = rawProclist[0]; //just to initialize
-                    for (int count = 0; count < rawProclist.Count; count++)
-                    {
-                        if (smallest.runlength > rawProclist[count].runlength)
-                        {
-                            smallest = rawProclist[count];
-                        }
-                        Proclist[counter] = smallest;
-                        rawProclist.Remove(smallest);
-                    }
-                }
-
-                for (int count = 0; count < Proclist.Length; count++)
-                {
+                    ProcessSim temper =new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                    Proclist[count] = temper;
                     Console.WriteLine("Launcing process" + count);
-                    Thread temp = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
-                    threadlist[count] = temp;
-                    temp.Start();
+                    Thread temp2 = new Thread(() => { temper.Driver(circuit, ExpoTools, controller); });
+                    threadlist[count] = temp2;
+                    temp2.Start();
                     Thread.Sleep(1);
+
                 }
+               
+               
+
+                
                 Recorder recorder = new Recorder();
                 Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
                 recordthread.Start();
@@ -95,12 +81,8 @@ namespace SimulationCore
                 Console.WriteLine("Runtime " + rundurationraw);
                 Console.WriteLine("Press any key to exit");
                 Console.ReadLine();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e); //generic crash handler for debugging
-                Console.ReadLine();
-            }
+            
+            
         }
 
     }
@@ -115,8 +97,8 @@ namespace SimulationCore
 
         public void paperbackwriter(Controller controller, ProcessSim[] proclist)
         {
-            int cpucount = 0;
-            int usecount = 0;
+            double cpucount = 0;
+            double usecount = 0;
             using (StreamWriter output = File.CreateText(filepath))
             {
                 while (controller.getState() == false)
@@ -129,21 +111,21 @@ namespace SimulationCore
 
                 while (controller.getState() == true)
                 {
-                    usecount++;
-                    output.WriteLine(" ");
-                    output.WriteLine("Current timestamp: " + DateTime.Now);
-                    for (int count = 0; count < proclist.Length; count ++)
-                    {
-                        if(proclist[count].currentqueue == "CPU")
-                        {
-                            cpucount++;
-                        }
-                        output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
-                    }
-                    Thread.Sleep(5);
+                    //usecount++;
+                    //output.WriteLine(" ");
+                    //output.WriteLine("Current timestamp: " + DateTime.Now);
+                    //for (int count = 0; count < proclist.Length; count ++)
+                    //{
+                    //    if(proclist[count].currentqueue == "CPU")
+                    //    {
+                    //        cpucount++;
+                    //    }
+                    //    output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
+                    //}
+                    //Thread.Sleep(5);
                 }
                 output.WriteLine(" ");
-                output.WriteLine("CPU utilization is "+(float)(cpucount / usecount));
+                
                 runtime.Stop();
                 TimeSpan rundurationraw = runtime.Elapsed;
                 double runtimes = 0;
@@ -157,10 +139,13 @@ namespace SimulationCore
                         output.WriteLine("    Execution time is: " + proclist[count].runlength);
                         output.WriteLine("    Wait time is " + proclist[count].waittime);
                         output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
+                        output.WriteLine(" ");
+
                     }
                     runtimes += (proclist[count].runlength / proclist.Length);
                     waittimes += (proclist[count].waittime / proclist.Length);
                     turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
+                    cpucount += proclist[count].cpuuse;
                     Thread.Sleep(1);
                 }
                 output.WriteLine("Average run time is: " + runtimes);

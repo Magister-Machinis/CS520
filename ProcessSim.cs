@@ -23,15 +23,17 @@ namespace SimulationCore
     {
         public List<ProcessSim> Readyqueue;
         public List<ProcessSim> IOqueue;
-        public List<ProcessSim> IOspace;
-        public List<ProcessSim> CPUspace;
+        public ProcessSim[] IOspace;
+        public ProcessSim[] CPUspace;
 
         public Circuit()
         {
             Readyqueue = new List<ProcessSim>();
             IOqueue = new List<ProcessSim>();
-            IOspace = new List<ProcessSim>();
-            CPUspace = new List<ProcessSim>();
+            IOspace = new ProcessSim[1];
+            CPUspace = new ProcessSim[1];
+            CPUspace[0] = null;
+            IOspace[0] = null;
         }
 
     }
@@ -43,6 +45,7 @@ namespace SimulationCore
         public double runlength;
         public double runtime;
         public double waittime;
+        public double cpuuse;
         public ProcessSim(Toolkit tool,  double runlenght)
         {
             incrit = false;
@@ -51,6 +54,7 @@ namespace SimulationCore
             runlength = runlenght;
             runtime = 0;
             waittime = 0;
+            cpuuse = 0;
         }
 
         public void Driver(Circuit circuit, Toolkit expotool, Controller controller)
@@ -67,9 +71,12 @@ namespace SimulationCore
             {
                 
                 ReadyandCPU(circuit, expotool);
-                circuit.CPUspace.Clear();
-                IOsequence(circuit, expotool);
-                circuit.IOspace.Clear();
+                circuit.CPUspace[0] = null;
+                if (runtime < runlength)
+                {
+                    IOsequence(circuit, expotool);
+                    circuit.IOspace[0] = null;
+                }
             }
             this.currentqueue = "Finished";
         }
@@ -85,12 +92,12 @@ namespace SimulationCore
                 Thread.Sleep(1);
                 this.waittime++;
             }
-            while(circuit.IOspace.Count != 0) //waiting for IO device to become available
+            while(circuit.IOspace[0] != null) //waiting for IO device to become available
             {
                 Thread.Sleep(1);
                 this.waittime++;
             }
-            circuit.IOspace.Add(this);
+            circuit.IOspace[0] =this;
             circuit.IOqueue.Remove(this);
             this.currentqueue = "IO space";
             Console.WriteLine("Process " + this.identnum + " entering io space");
@@ -107,16 +114,16 @@ namespace SimulationCore
             double smallnum = circuit.Readyqueue[0].runlength;
             while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
             {
-                Console.WriteLine("Process " + this.identnum + " entering ready queue");
+                
                 smallnum = circuit.Readyqueue[0].runlength;
-                int queuesize = circuit.Readyqueue.Count;
-                for (int count =0; count < queuesize; count++)
+               
+                for (int count =0; count < circuit.Readyqueue.Count; count++)
                 {
                     if(smallnum > circuit.Readyqueue[count].runlength)
                     {
                         smallnum = circuit.Readyqueue[count].runlength;
                     }
-                    queuesize = circuit.Readyqueue.Count;
+                    
 
                 }
                  
@@ -124,19 +131,26 @@ namespace SimulationCore
                 this.waittime++;
                 
             }
-            while (circuit.CPUspace.Count != 0) //waiting for cpu to become available
+
+            while (circuit.CPUspace[0] != null) //waiting for cpu to become available
             {
                 Thread.Sleep(1);
                 this.waittime++;
             }
-            Console.WriteLine("Process " + this.identnum + " entering cpu queue");
-            circuit.CPUspace.Add(this);
+            
+            circuit.CPUspace[0] = this;
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";
-            int sleeptime = Convert.ToInt32(expotool.ReallyRandom() % 2147483647);
-            Thread.Sleep(sleeptime); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
+            double sleeptime = (expotool.ReallyRandom() % int.MaxValue);
+            if(sleeptime > (runlength-runtime))
+            {
+                sleeptime = (runlength - runtime);
+            }
+            int sleeptime2 = Convert.ToInt32(sleeptime);
+            Thread.Sleep(sleeptime2); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
             Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
             runtime += sleeptime;
+            cpuuse += sleeptime;
 
         }
        

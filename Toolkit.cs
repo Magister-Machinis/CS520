@@ -221,7 +221,7 @@ namespace GenericTools
         double ExpoDis()
         {
 
-            seed = (-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo)); //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
+            seed = (-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo))*100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
 
             return seed;
 
