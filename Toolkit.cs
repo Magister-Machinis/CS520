@@ -221,7 +221,7 @@ namespace GenericTools
         double ExpoDis()
         {
 
-            seed = (Math.Abs(-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo)))*100; 
+            seed = (Math.Abs(-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo)))*100; //multiplier at end to remove decimal points
 
             return seed;
 

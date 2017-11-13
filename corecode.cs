@@ -81,6 +81,12 @@ namespace SimulationCore
             catch(Exception e)
             {
                 Console.WriteLine(e); //generic crash handler for debugging
+                string bugpath = Path.GetFullPath(@".\errorlog.txt");
+                using (StreamWriter buggy = File.CreateText(bugpath))
+                {
+                    buggy.WriteLine(e);
+                }
+                Console.ReadLine();
             }
         }
 
@@ -111,16 +117,16 @@ namespace SimulationCore
                 while (controller.getState() == true)
                 {
                     usecount++;
-                    output.WriteLine(" ");
-                    output.WriteLine("Current timestamp: " + DateTime.Now);
-                    for (int count = 0; count < proclist.Length; count ++)
-                    {
+                //    output.WriteLine(" ");
+                //    output.WriteLine("Current timestamp: " + DateTime.Now);
+                //    for (int count = 0; count < proclist.Length; count ++)
+                //    {
                         
-                        output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
-                    }
-                    Thread.Sleep(5);
+                //        output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
+                //    }
+                //    Thread.Sleep(5);
                 }
-                output.WriteLine(" ");
+                //output.WriteLine(" ");
                 
                 runtime.Stop();
                 TimeSpan rundurationraw = runtime.Elapsed;
@@ -129,13 +135,13 @@ namespace SimulationCore
                 double turnarounds = 0;
                 for(int count = 0; count < proclist.Length; count++)
                 {
-                    if (count % 1000 == 0) //restricting state records to once a second or so
-                    {
+                    
                         output.WriteLine("Process " + count);
                         output.WriteLine("    Execution time is: " + proclist[count].runlength);
                         output.WriteLine("    Wait time is " + proclist[count].waittime);
                         output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
-                    }
+                        output.WriteLine(" ");
+                    
                     runtimes += (proclist[count].runlength / proclist.Length);
                     waittimes += (proclist[count].waittime / proclist.Length);
                     turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
