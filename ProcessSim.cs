@@ -43,6 +43,7 @@ namespace SimulationCore
         public double runlength;
         public double runtime;
         public double waittime;
+        public double cpuuse;
         public ProcessSim(Toolkit tool,  double runlenght)
         {
             incrit = false;
@@ -51,6 +52,7 @@ namespace SimulationCore
             runlength = runlenght;
             runtime = 0;
             waittime = 0;
+            cpuuse = 0;
         }
 
         public void Driver(Circuit circuit, Toolkit expotool, Controller controller)
@@ -96,6 +98,7 @@ namespace SimulationCore
             Console.WriteLine("Process " + this.identnum + " entering io space");
             Thread.Sleep(60);
             this.runtime += 60;
+            
 
         
         }
@@ -119,9 +122,10 @@ namespace SimulationCore
             this.currentqueue = "CPU";
             
             int sleeptime = Convert.ToInt32(expotool.ReallyRandom() % 2147483647);
-            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+ sleeptime);
             Thread.Sleep(sleeptime); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
             runtime += sleeptime;
+            cpuuse += sleeptime;
 
         }
        

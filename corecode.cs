@@ -96,8 +96,8 @@ namespace SimulationCore
 
         public void paperbackwriter(Controller controller, ProcessSim[] proclist)
         {
-            int cpucount = 0;
-            int usecount = 0;
+            double cpucount = 0;
+            double usecount = 0;
             using (StreamWriter output = File.CreateText(filepath))
             {
                 while (controller.getState() == false)
@@ -115,16 +115,13 @@ namespace SimulationCore
                     output.WriteLine("Current timestamp: " + DateTime.Now);
                     for (int count = 0; count < proclist.Length; count ++)
                     {
-                        if(proclist[count].currentqueue == "CPU")
-                        {
-                            cpucount++;
-                        }
+                        
                         output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
                     }
                     Thread.Sleep(5);
                 }
                 output.WriteLine(" ");
-                output.WriteLine("CPU utilization is "+(float)(cpucount / usecount));
+                
                 runtime.Stop();
                 TimeSpan rundurationraw = runtime.Elapsed;
                 double runtimes = 0;
@@ -142,12 +139,15 @@ namespace SimulationCore
                     runtimes += (proclist[count].runlength / proclist.Length);
                     waittimes += (proclist[count].waittime / proclist.Length);
                     turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
+                    cpucount += (proclist[count].cpuuse);
                     Thread.Sleep(1);
                 }
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);
                 output.WriteLine("Average turnaround is: " + turnarounds);
+                output.WriteLine("CPU utilization is " + (cpucount / turnarounds));
                 output.WriteLine("Simulation Time " + rundurationraw);
+                
 
 
             }
