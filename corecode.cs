@@ -26,55 +26,62 @@ namespace SimulationCore
 
         static void Main(string[] args)
         {
-            
-            Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
-            Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
-            bigtimer.Start();
-            littletimer.Start();
-            Console.WriteLine("initializng exponential toolkit");
-            Toolkit ExpoTools = new Toolkit(2);
-            Console.WriteLine("initializng uniform toolkit");
-            Toolkit UniTools = new Toolkit(3);
-            ProcessSim[] Proclist = new ProcessSim[10];
-            Thread[] threadlist = new Thread[10];
-            Circuit circuit = new Circuit();
-            Controller controller = new Controller();
-            for (int count = 0; count < Proclist.Length; count++)
+            try
             {
-                Console.WriteLine("Creating process "+count);
-                double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
-                Console.WriteLine("Run time will be " + temp);
-                Proclist[count] = new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
+                Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
+                bigtimer.Start();
+                littletimer.Start();
+                Console.WriteLine("initializng uniform toolkit");
+                Toolkit UniTools = new Toolkit(3);
+                Console.WriteLine("initializng exponential toolkit");
+                Toolkit ExpoTools = new Toolkit(2);
+
+                ProcessSim[] Proclist = new ProcessSim[10];
+                Thread[] threadlist = new Thread[10];
+                Circuit circuit = new Circuit();
+                Controller controller = new Controller();
+                for (int count = 0; count < Proclist.Length; count++)
+                {
+                    Console.WriteLine("Creating process " + count);
+                    double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
+                    Console.WriteLine("Run time will be " + temp);
+                    Proclist[count] = new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                }
+                for (int count = 0; count < Proclist.Length; count++)
+                {
+                    Console.WriteLine("Launcing process" + count);
+                    Thread temp = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
+                    threadlist[count] = temp;
+                    temp.Start();
+                    Thread.Sleep(1);
+                }
+                Recorder recorder = new Recorder();
+                Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
+                recordthread.Start();
+
+                controller.toggleState();
+                for (int count = 0; count < Proclist.Length; count++)
+                {
+                    Console.WriteLine("Waiting on process" + count);
+                    threadlist[count].Join();
+                }
+                controller.toggleState();
+                recordthread.Join();
+
+
+
+                bigtimer.Stop();
+                TimeSpan rundurationraw = bigtimer.Elapsed;
+
+                Console.WriteLine("Runtime " + rundurationraw);
+                Console.WriteLine("Press any key to exit");
+                Console.ReadLine();
             }
-            for (int count = 0; count < Proclist.Length; count++)
+            catch(Exception e)
             {
-                Console.WriteLine("Launcing process" +count);
-                Thread temp = new Thread(() => { Proclist[count].Driver(circuit, ExpoTools, controller); });
-                threadlist[count] = temp;
-                temp.Start();
-                Thread.Sleep(1);
+                Console.WriteLine(e); //generic crash handler for debugging
             }
-        Recorder recorder = new Recorder();
-            Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
-            recordthread.Start();
-
-            controller.toggleState();
-            for (int count = 0; count < Proclist.Length; count++)
-            {
-                Console.WriteLine("Waiting on process" +count);
-                threadlist[count].Join();
-            }
-            controller.toggleState();
-            recordthread.Join();
-
-
-
-            bigtimer.Stop();
-            TimeSpan rundurationraw = bigtimer.Elapsed;
-
-            Console.WriteLine("Runtime " + rundurationraw);
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
         }
 
     }
@@ -125,14 +132,17 @@ namespace SimulationCore
                 double turnarounds = 0;
                 for(int count = 0; count < proclist.Length; count++)
                 {
-                    output.WriteLine("Process " + count);
-                    output.WriteLine("    Execution time is: " + proclist[count].runlength);
-                    output.WriteLine("    Wait time is " + proclist[count].waittime);
-                    output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
-
+                    if (count % 1000 == 0) //restricting state records to once a second or so
+                    {
+                        output.WriteLine("Process " + count);
+                        output.WriteLine("    Execution time is: " + proclist[count].runlength);
+                        output.WriteLine("    Wait time is " + proclist[count].waittime);
+                        output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
+                    }
                     runtimes += (proclist[count].runlength / proclist.Length);
                     waittimes += (proclist[count].waittime / proclist.Length);
                     turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
+                    Thread.Sleep(1);
                 }
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);

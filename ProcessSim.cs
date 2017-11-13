@@ -69,9 +69,9 @@ namespace SimulationCore
                 ReadyandCPU(circuit, expotool);
                 circuit.CPUspace.Clear();
                 IOsequence(circuit, expotool);
-                circuit.IOqueue.Clear();
+                circuit.IOspace.Clear();
             }
-
+            this.currentqueue = "Finished";
         }
 
         void IOsequence(Circuit circuit, Toolkit expotool)

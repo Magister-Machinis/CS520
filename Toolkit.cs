@@ -33,41 +33,66 @@ namespace GenericTools
             waitinglist = new List<double>();
             if (type > 0)
             {
+
+
                 
 
-                Thread seedthread = new Thread(() => { seed = SeedGen(); });
-                seedthread.Start();
-                Thread.Sleep(1);
-                Thread multhread = new Thread(() => { multiplier = SeedGen(); });
-                multhread.Start();
-                Thread.Sleep(1);
-                Thread modthread = new Thread(() => { modulo = SeedGen(); });
-                modthread.Start();
-                Thread.Sleep(1);
-                Thread incthread = new Thread(() => { increment = SeedGen(); });
-                incthread.Start();
-                Thread.Sleep(1);
-                seedthread.Join();
-                multhread.Join();
-                modthread.Join();
-                incthread.Join();
+                if(type ==1)
+                {
+                    Thread seedthread = new Thread(() => { seed = SeedGen(); });
+                    seedthread.Start();
+                    Thread.Sleep(1);
+                    Thread multhread = new Thread(() => { multiplier = SeedGen(); });
+                    multhread.Start();
+                    Thread.Sleep(1);
+                    Thread modthread = new Thread(() => { modulo = SeedGen(); });
+                    modthread.Start();
+                    Thread.Sleep(1);
+                    Thread incthread = new Thread(() => { increment = SeedGen(); });
+                    incthread.Start();
+                    Thread.Sleep(1);
+                    seedthread.Join();
+                    multhread.Join();
+                    modthread.Join();
+                    incthread.Join();
+                }
 
-            }
-            if (type == 2)
-            {
-                TimeList = new List<double>();
-                TimeList.Add(1);
-                LastTime = DateTime.Now;
-            }
-            if (type == 3)
-            {
-                Seedlist = new List<double>();
-                Seedlist.Add(seed);
-                Seedlist.Add(increment);
-                Seedlist.Add(multiplier);
-                Seedlist.Add(modulo);
-                Thread Genthread = new Thread(() => { ListGenerator(); });
-                Genthread.Start();
+                if (type == 2)
+                {
+                    Thread seedthread = new Thread(() => { seed = SeedGen(); });
+                    seedthread.Start();
+                    Thread.Sleep(1);
+                    Thread multhread = new Thread(() => { multiplier = SeedGen(); });
+                    multhread.Start();
+                    Thread.Sleep(1);
+                    Thread modthread = new Thread(() => { modulo = SeedGen(); });
+                    modthread.Start();
+                    Thread.Sleep(1);
+                    Thread incthread = new Thread(() => { increment = SeedGen(); });
+                    incthread.Start();
+                    Thread.Sleep(1);
+                    TimeList = new List<double>();
+                    TimeList.Add(1);
+                    LastTime = DateTime.Now;
+                    seedthread.Join();
+                    multhread.Join();
+                    modthread.Join();
+                    incthread.Join();
+                }
+                if (type == 3)
+                {
+                    Seedlist = new List<double>();
+                    Thread[] threadarray = new Thread[75];
+                    for (int count = 0; count < 75; count++)
+                    {
+                        threadarray[count] = new Thread(() => { Seedlist.Add(SeedGen()); });
+                        threadarray[count].Start();
+                    }
+                    
+                    Thread Genthread = new Thread(() => { ListGenerator(); });
+                    Genthread.Start();
+                }
+                
             }
 
 
@@ -78,24 +103,18 @@ namespace GenericTools
             while (true)
             {
                 Thread.Sleep(1);
-                if (Seedlist.Count < 30)
+                if (Seedlist.Count < 300)
                 {
-                    Thread Seed1 = new Thread(() => { Seedlist.Add(SeedGen()); });
-                    Thread Seed2 = new Thread(() => { Seedlist.Add(SeedGen()); });
-                    Thread Seed3 = new Thread(() => { Seedlist.Add(SeedGen()); });
-                    Thread Seed4 = new Thread(() => { Seedlist.Add(SeedGen()); });
-                    Seed1.Start();
-                    Thread.Sleep(1);
-                    Seed2.Start();
-                    Thread.Sleep(1);
-                    Seed3.Start();
-                    Thread.Sleep(1);
-                    Seed4.Start();
-                    Thread.Sleep(1);
-                    Seed1.Join();
-                    Seed2.Join();
-                    Seed3.Join();
-                    Seed4.Join();
+                    Thread[] threadarray = new Thread[75];
+                    for (int count = 0; count < 75; count++)
+                    {
+                        threadarray[count] = new Thread(() => { Seedlist.Add(SeedGen()); });
+                        threadarray[count].Start();
+                    }
+                    for (int count = 0; count < 75; count++)
+                    {
+                        threadarray[count].Join();
+                    }
                 }
             }
         }
