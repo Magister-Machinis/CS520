@@ -27,62 +27,64 @@ namespace SimulationCore
 
         static void Main(string[] args)
         {
-            
-                Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
-                Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
-                bigtimer.Start();
-                littletimer.Start();
-                Console.WriteLine("initializng uniform toolkit");
-                Toolkit UniTools = new Toolkit(3);
-                Console.WriteLine("initializng exponential toolkit");
-                Toolkit ExpoTools = new Toolkit(2);
 
-                List<ProcessSim> rawProclist = new List<ProcessSim>();
-                ProcessSim[] Proclist = new ProcessSim[10];
-                Thread[] threadlist = new Thread[10];
-                Circuit circuit = new Circuit();
-                Controller controller = new Controller();
-                for (int count = 0; count < Proclist.Length; count++)
-                {
-                    Console.WriteLine("Creating process " + count);
-                    double temp = (12 + ((UniTools.ReallyRandom()) % 12))* 10000;
-                    Console.WriteLine("Run time will be " + temp);
-                    ProcessSim temper =new ProcessSim(ExpoTools, temp); //gives a runtime  between 2 and 4 minutes with uniform distribution
-                    Proclist[count] = temper;
-                    Console.WriteLine("Launcing process" + count);
-                    Thread temp2 = new Thread(() => { temper.Driver(circuit, ExpoTools, controller); });
-                    threadlist[count] = temp2;
-                    temp2.Start();
-                    Thread.Sleep(1);
-
-                }
-               
-               
-
-                
-                Recorder recorder = new Recorder();
-                Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
-                recordthread.Start();
-
-                controller.toggleState();
-                for (int count = 0; count < Proclist.Length; count++)
-                {
-                    Console.WriteLine("Waiting on process" + count);
-                    threadlist[count].Join();
-                }
-                controller.toggleState();
-                recordthread.Join();
+            Stopwatch littletimer = new Stopwatch(); //timer for use if user select automatic lengthed simulation
+            Stopwatch bigtimer = new Stopwatch(); //timer for runtime statistics
+            bigtimer.Start();
+            littletimer.Start();
+            Console.WriteLine("initializing uniform toolkit");
+            Toolkit UniTools = new Toolkit(3);
+            Toolkit Expotools = new Toolkit(2);
 
 
 
-                bigtimer.Stop();
-                TimeSpan rundurationraw = bigtimer.Elapsed;
 
-                Console.WriteLine("Runtime " + rundurationraw);
-                Console.WriteLine("Press any key to exit");
-                Console.ReadLine();
-            
-            
+            List<ProcessSim> rawProclist = new List<ProcessSim>();
+            ProcessSim[] Proclist = new ProcessSim[10];
+            Thread[] threadlist = new Thread[10];
+            Circuit circuit = new Circuit();
+            Controller controller = new Controller();
+            for (int count = 0; count < Proclist.Length; count++)
+            {
+                Console.WriteLine("Creating process " + count);
+                double temp = (120000 + ((UniTools.ReallyRandom()) % 120000));
+                Console.WriteLine("Run time will be " + temp);
+                ProcessSim temper = new ProcessSim(temp, Expotools); //gives a runtime  between 2 and 4 minutes with uniform distribution
+                Proclist[count] = temper;
+                Console.WriteLine("Launching process" + count);
+                Thread temp2 = new Thread(() => { temper.Driver(circuit, controller); });
+                threadlist[count] = temp2;
+                temp2.Start();
+                Thread.Sleep(500);
+
+            }
+
+
+
+
+            Recorder recorder = new Recorder();
+            Thread recordthread = new Thread(() => { recorder.paperbackwriter(controller, Proclist); });
+            recordthread.Start();
+
+            controller.toggleState();
+            for (int count = 0; count < Proclist.Length; count++)
+            {
+                Console.WriteLine("Waiting on process" + count);
+                threadlist[count].Join();
+            }
+            controller.toggleState();
+            recordthread.Join();
+
+
+
+            bigtimer.Stop();
+            TimeSpan rundurationraw = bigtimer.Elapsed;
+
+            Console.WriteLine("Runtime " + rundurationraw);
+            Console.WriteLine("Press any key to exit");
+            Console.ReadLine();
+
+
         }
 
     }

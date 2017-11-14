@@ -72,7 +72,7 @@ namespace GenericTools
                     incthread.Start();
                     Thread.Sleep(1);
                     TimeList = new List<double>();
-                    TimeList.Add(1);
+                    TimeList.Add(1/3);
                     LastTime = DateTime.Now;
                     seedthread.Join();
                     multhread.Join();
@@ -82,12 +82,6 @@ namespace GenericTools
                 if (type == 3)
                 {
                     Seedlist = new List<double>();
-                    Thread[] threadarray = new Thread[75];
-                    for (int count = 0; count < 75; count++)
-                    {
-                        threadarray[count] = new Thread(() => { Seedlist.Add(SeedGen()); });
-                        threadarray[count].Start();
-                    }
                     
                     Thread Genthread = new Thread(() => { ListGenerator(); });
                     Genthread.Start();
@@ -121,7 +115,7 @@ namespace GenericTools
         double TimeAverage()
         {
             DateTime temp = DateTime.Now;
-            double TimeDif = LastTime.Millisecond - temp.Millisecond;
+            double TimeDif = (LastTime.Ticks - temp.Ticks) % 511;
             LastTime = temp;
             TimeList.Add(TimeDif);
             double avg = 0;
@@ -133,6 +127,7 @@ namespace GenericTools
             {
                 TimeList.RemoveAt(0);
             }
+            
             return avg;
         }
 
@@ -187,7 +182,7 @@ namespace GenericTools
                 RNGCryptoServiceProvider gibberish = new RNGCryptoServiceProvider();
                 byte[] buffer = new byte[8];
                 gibberish.GetBytes(buffer);
-                randomnum = BitConverter.ToInt64(buffer, 0);
+                randomnum = Math.Abs(BitConverter.ToInt64(buffer, 0));
             }
             else if (Type == 1)
             {
@@ -213,7 +208,7 @@ namespace GenericTools
         {
 
 
-            seed = ((seed * multiplier) + increment) % modulo;
+            seed = (((seed * multiplier) + increment) % modulo);
 
             return seed;
         }
@@ -222,6 +217,10 @@ namespace GenericTools
         {
 
             seed = (-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo))*100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
+            if(double.IsNaN(seed) | double.IsInfinity(seed)) //if values get too small for double, reinitialize from crypto library and carry on
+            {
+                seed = this.ReallyRandom(true);
+            }
 
             return seed;
 
@@ -287,7 +286,7 @@ namespace GenericTools
                 Pinger.Start();
                 
 
-                if (count % 150 == 0)
+                if (count % 200 == 0)
                 {
                     if (debug == true)
                     {
@@ -298,6 +297,7 @@ namespace GenericTools
                         Pinglist[counter].Join();
                     }
                     Pinglist.Clear();
+                    
                 }
                 count++;
 

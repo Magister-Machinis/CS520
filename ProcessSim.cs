@@ -46,19 +46,24 @@ namespace SimulationCore
         public double runtime;
         public double waittime;
         public double cpuuse;
-        public ProcessSim(Toolkit tool,  double runlenght)
+        public Toolkit ExpoTool;
+        public ProcessSim(double runlenght, Toolkit expoTool)
         {
             incrit = false;
             currentqueue = "start";
-            identnum = tool.ReallyRandom();
+            ExpoTool = expoTool;
+            
+            identnum = ExpoTool.ReallyRandom();
+            
             runlength = runlenght;
             runtime = 0;
             waittime = 0;
             cpuuse = 0;
         }
 
-        public void Driver(Circuit circuit, Toolkit expotool, Controller controller)
+        public void Driver(Circuit circuit, Controller controller)
         {
+            Toolkit expotool = ExpoTool;
 
             while (controller.getState() == false)
             {
@@ -79,6 +84,7 @@ namespace SimulationCore
                 }
             }
             this.currentqueue = "Finished";
+            Console.WriteLine("Process " + this.identnum + " is finished");
         }
 
         void IOsequence(Circuit circuit, Toolkit expotool)
@@ -110,7 +116,7 @@ namespace SimulationCore
         {
             circuit.Readyqueue.Add(this);
             this.currentqueue = "Ready";
-            
+            Console.WriteLine("Process " + this.identnum + " is entering Ready queue");
             double smallnum = circuit.Readyqueue[0].runlength;
             while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
             {
@@ -141,12 +147,21 @@ namespace SimulationCore
             circuit.CPUspace[0] = this;
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";
-            double sleeptime = (expotool.ReallyRandom() % int.MaxValue);
-            if(sleeptime > (runlength-runtime))
+            double sleeptime = expotool.ReallyRandom();
+            
+            int sleeptime2;
+            
+            
+            
+          
+            if (sleeptime > (runlength-runtime))
             {
                 sleeptime = (runlength - runtime);
+                
             }
-            int sleeptime2 = Convert.ToInt32(sleeptime);
+            sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 2) - 1))));
+            sleeptime2 = Convert.ToInt32(sleeptime);
+
             Thread.Sleep(sleeptime2); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
             Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
             runtime += sleeptime;
