@@ -98,10 +98,23 @@ namespace SimulationCore
                 Thread.Sleep(1);
                 this.waittime++;
             }
-            while(circuit.IOspace[0] != null) //waiting for IO device to become available
+
+            bool cpucatch = false;
+            while (cpucatch == false)
             {
-                Thread.Sleep(1);
-                this.waittime++;
+                try
+                {
+                    while (circuit.IOspace[0] != null ) //waiting for IO device to become available
+                    {
+                        Thread.Sleep(1);
+                        this.waittime++;
+                    }
+                    cpucatch = true;
+                }
+                catch
+                {
+                    cpucatch = false;
+                }
             }
             circuit.IOspace[0] =this;
             circuit.IOqueue.Remove(this);
@@ -117,31 +130,48 @@ namespace SimulationCore
             circuit.Readyqueue.Add(this);
             this.currentqueue = "Ready";
             Console.WriteLine("Process " + this.identnum + " is entering Ready queue");
-            double smallnum = circuit.Readyqueue[0].runlength;
-            while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
+            while(circuit.Readyqueue[0].identnum != this.identnum)
             {
-                
-                smallnum = circuit.Readyqueue[0].runlength;
-               
-                for (int count =0; count < circuit.Readyqueue.Count; count++)
-                {
-                    if(smallnum > circuit.Readyqueue[count].runlength)
-                    {
-                        smallnum = circuit.Readyqueue[count].runlength;
-                    }
-                    
-
-                }
-                 
                 Thread.Sleep(1);
                 this.waittime++;
-                
             }
 
-            while (circuit.CPUspace[0] != null) //waiting for cpu to become available
+            //double smallnum = circuit.Readyqueue[0].runlength;
+            //while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
+            //{
+
+            //    smallnum = circuit.Readyqueue[0].runlength;
+
+            //    for (int count =0; count < circuit.Readyqueue.Count; count++)
+            //    {
+            //        if(smallnum > circuit.Readyqueue[count].runlength)
+            //        {
+            //            smallnum = circuit.Readyqueue[count].runlength;
+            //        }
+
+
+            //    }
+
+            //    Thread.Sleep(1);
+            //    this.waittime++;
+
+            //}
+            bool cpucatch = false;
+            while (cpucatch == false)
             {
-                Thread.Sleep(1);
-                this.waittime++;
+                try
+                {
+                    while (circuit.CPUspace[0] != null ) //waiting for cpu to become available
+                    {
+                        Thread.Sleep(1);
+                        this.waittime++;
+                    }
+                    cpucatch = true;
+                }
+                catch
+                {
+                    cpucatch = false;
+                }
             }
             
             circuit.CPUspace[0] = this;
