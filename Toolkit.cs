@@ -1,5 +1,6 @@
 ﻿/* 
  * https://msdn.microsoft.com/en-us/library/hb7xxkfx(v=vs.110).aspx for pinging entropy gen 
+ * https://stackoverflow.com/questions/9386672/finding-the-number-of-places-after-the-decimal-point-of-a-double for handling pesky double decimals not converting to int
  */
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace GenericTools
         List<double> Seedlist;
         DateTime LastTime;
 
-       public Toolkit(int type = 0, bool Debug = false) // instance of generator is started with either in built crypto PRG or homebrewed entropy source, debug turns on console output
+        public Toolkit(int type = 0, bool Debug = false) // instance of generator is started with either in built crypto PRG or homebrewed entropy source, debug turns on console output
         {
 
             debug = Debug;
@@ -35,9 +36,9 @@ namespace GenericTools
             {
 
 
-                
 
-                if(type ==1)
+
+                if (type == 1)
                 {
                     Thread seedthread = new Thread(() => { seed = SeedGen(); });
                     seedthread.Start();
@@ -82,11 +83,11 @@ namespace GenericTools
                 if (type == 3)
                 {
                     Seedlist = new List<double>();
-                    
+
                     Thread Genthread = new Thread(() => { ListGenerator(); });
                     Genthread.Start();
                 }
-                
+
             }
 
 
@@ -119,7 +120,7 @@ namespace GenericTools
             LastTime = temp;
             TimeList.Add(TimeDif);
             double avg = 0;
-            for (int count = 0; count < TimeList.Count-1; count++)
+            for (int count = 0; count < TimeList.Count - 1; count++)
             {
                 avg += TimeList[count] / TimeList.Count;
             }
@@ -127,7 +128,7 @@ namespace GenericTools
             {
                 TimeList.RemoveAt(0);
             }
-            
+
             return avg;
         }
 
@@ -216,12 +217,17 @@ namespace GenericTools
         double ExpoDis()
         {
 
-            seed = (-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo))*100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
-            if(double.IsNaN(seed) | double.IsInfinity(seed)) //if values get too small for double, reinitialize from crypto library and carry on
+            seed = (-(1 / TimeAverage()) * Math.Log(LinearDis() / modulo)) * 100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
+            if (double.IsNaN(seed) | double.IsInfinity(seed)) //if values get too small for double, reinitialize from crypto library and carry on
             {
                 seed = this.ReallyRandom(true);
             }
-
+            double precision = 1;
+            while ((decimal)seed * (decimal)Math.Pow(10, precision) != Math.Round((decimal)seed * (decimal)Math.Pow(10, precision))) precision++;
+            if (precision != 1)
+            {
+                seed *= (precision * 10);
+            }
             return seed;
 
         }
@@ -284,7 +290,7 @@ namespace GenericTools
                 });
                 Pinglist.Add(Pinger);
                 Pinger.Start();
-                
+
 
                 if (count % 200 == 0)
                 {
@@ -292,17 +298,17 @@ namespace GenericTools
                     {
                         Console.WriteLine("Waiting on pings to finish up");
                     }
-                    for (int counter = 0; counter < Pinglist.Count-1; counter++)
+                    for (int counter = 0; counter < Pinglist.Count - 1; counter++)
                     {
                         Pinglist[counter].Join();
                     }
                     Pinglist.Clear();
-                    
+
                 }
                 count++;
 
             }
-            for (int counter = 0; counter < Pinglist.Count-1; counter++)
+            for (int counter = 0; counter < Pinglist.Count - 1; counter++)
             {
                 Pinglist[counter].Join();
             }
