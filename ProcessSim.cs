@@ -224,11 +224,13 @@ namespace SimulationCore
             }
             
             sleeptime2 = Convert.ToInt32(sleeptime);
-
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue for " + sleeptime);
             Thread.Sleep(sleeptime2); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
-            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
+            
             runtime += sleeptime;
             cpuuse += sleeptime;
+            Timesequence.Add(sleeptime2);
+            Statesequence.Add("CPU");
             return getinline;
         }
        

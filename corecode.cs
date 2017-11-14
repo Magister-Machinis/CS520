@@ -153,6 +153,7 @@ namespace SimulationCore
                             line += proclist[count].Statesequence[counter] + " | ";
                         }
                     }
+                    output.WriteLine(line);
                 }
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);
