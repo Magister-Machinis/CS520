@@ -90,6 +90,10 @@ namespace SimulationCore
         void IOsequence(Circuit circuit, Toolkit expotool)
         {
             circuit.IOqueue.Add(this);
+            //while (circuit.IOqueue.Count == 0)
+            //{
+            //    Thread.Sleep(1);
+            //}
             this.currentqueue = "IO Queue";
             Console.WriteLine("Process " + this.identnum + " entering io queue");
             
@@ -98,10 +102,22 @@ namespace SimulationCore
                 Thread.Sleep(1);
                 this.waittime++;
             }
-            while(circuit.IOspace[0] != null) //waiting for IO device to become available
+            bool cpucatch = false;
+            while (cpucatch == false)
             {
-                Thread.Sleep(1);
-                this.waittime++;
+                try
+                {
+                    while (circuit.IOspace[0] != null) //waiting for IO device to become available
+                    {
+                        Thread.Sleep(1);
+                        this.waittime++;
+                    }
+                    cpucatch = true;
+                }
+                catch
+                {
+                    cpucatch = false;
+                }
             }
             circuit.IOspace[0] =this;
             circuit.IOqueue.Remove(this);
@@ -115,6 +131,10 @@ namespace SimulationCore
         void ReadyandCPU(Circuit circuit, Toolkit expotool)
         {
             circuit.Readyqueue.Add(this);
+            //while(circuit.Readyqueue.Count == 0)
+            //{
+            //    Thread.Sleep(1);
+            //}
             this.currentqueue = "Ready";
             Console.WriteLine("Process " + this.identnum + " is entering Ready queue");
             double smallnum = circuit.Readyqueue[0].runlength;
@@ -122,8 +142,9 @@ namespace SimulationCore
             {
                 
                 smallnum = circuit.Readyqueue[0].runlength;
-               
-                for (int count =0; count < circuit.Readyqueue.Count; count++)
+                
+                
+                for (int count =0; count < circuit.Readyqueue.Count-1; count++)
                 {
                     if(smallnum > circuit.Readyqueue[count].runlength)
                     {
@@ -138,12 +159,24 @@ namespace SimulationCore
                 
             }
 
-            while (circuit.CPUspace[0] != null) //waiting for cpu to become available
+            bool cpucatch = false;
+            while (cpucatch == false)
             {
-                Thread.Sleep(1);
-                this.waittime++;
+                try
+                {
+                    while (circuit.CPUspace[0] != null) //waiting for IO device to become available
+                    {
+                        Thread.Sleep(1);
+                        this.waittime++;
+                    }
+                    cpucatch = true;
+                }
+                catch
+                {
+                    cpucatch = false;
+                }
             }
-            
+
             circuit.CPUspace[0] = this;
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";

@@ -25,7 +25,7 @@ namespace GenericTools
         List<double> Seedlist;
         DateTime LastTime;
 
-       public Toolkit(int type = 0, bool Debug = false) // instance of generator is started with either in built crypto PRG or homebrewed entropy source, debug turns on console output
+        public Toolkit(int type = 0, bool Debug = false) // instance of generator is started with either in built crypto PRG or homebrewed entropy source, debug turns on console output
         {
 
             debug = Debug;
@@ -35,9 +35,9 @@ namespace GenericTools
             {
 
 
-                
 
-                if(type ==1)
+
+                if (type == 1)
                 {
                     Thread seedthread = new Thread(() => { seed = SeedGen(); });
                     seedthread.Start();
@@ -72,7 +72,7 @@ namespace GenericTools
                     incthread.Start();
                     Thread.Sleep(1);
                     TimeList = new List<double>();
-                    TimeList.Add(1/3);
+                    TimeList.Add(1);
                     LastTime = DateTime.Now;
                     seedthread.Join();
                     multhread.Join();
@@ -82,14 +82,14 @@ namespace GenericTools
                 if (type == 3)
                 {
                     Seedlist = new List<double>();
-                    
+
                     Thread Genthread = new Thread(() => { ListGenerator(); });
                     Genthread.Start();
                 }
-                
+
             }
 
-
+        
         }
 
         void ListGenerator()
