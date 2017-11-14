@@ -25,6 +25,7 @@ namespace SimulationCore
         public List<ProcessSim> IOqueue;
         public ProcessSim[] IOspace;
         public ProcessSim[] CPUspace;
+        public double quantum;
 
         public Circuit()
         {
@@ -34,6 +35,7 @@ namespace SimulationCore
             CPUspace = new ProcessSim[1];
             CPUspace[0] = null;
             IOspace[0] = null;
+            quantum = 50;
         }
 
     }
@@ -74,8 +76,12 @@ namespace SimulationCore
 
             while (runtime < runlength)
             {
-                
-                ReadyandCPU(circuit, expotool);
+
+                bool RRcontrol = false;
+                do
+                {
+                    RRcontrol= ReadyandCPU(circuit, expotool); //loop back into ready queue if roundrobin control takes cpu away
+                } while (RRcontrol == true);
                 circuit.CPUspace[0] = null;
                 if (runtime < runlength)
                 {
@@ -125,7 +131,7 @@ namespace SimulationCore
 
         
         }
-        void ReadyandCPU(Circuit circuit, Toolkit expotool)
+        bool ReadyandCPU(Circuit circuit, Toolkit expotool)
         {
             circuit.Readyqueue.Add(this);
             while(circuit.Readyqueue.Count == 0)
@@ -184,23 +190,27 @@ namespace SimulationCore
             double sleeptime = expotool.ReallyRandom();
             
             int sleeptime2;
-            
-            
-            
-          
+            sleeptime = Convert.ToInt32(Math.Abs((sleeptime * 100 % ((Int32.MaxValue / 1.5) - 1))));
+
+            bool getinline = false;
+            if(sleeptime > circuit.quantum)
+            {
+                sleeptime = circuit.quantum;
+                getinline = true;
+            }
             if (sleeptime > (runlength-runtime))
             {
                 sleeptime = (runlength - runtime);
                 
             }
-            sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 2) - 1))));
+            
             sleeptime2 = Convert.ToInt32(sleeptime);
 
             Thread.Sleep(sleeptime2); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
             Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
             runtime += sleeptime;
             cpuuse += sleeptime;
-
+            return getinline;
         }
        
     }
