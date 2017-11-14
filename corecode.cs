@@ -93,7 +93,7 @@ namespace SimulationCore
         string filepath;
         public Recorder()
         {
-            filepath = @".\output.txt";
+            filepath = @".\output.csv";
             filepath = Path.GetFullPath(filepath);
         }
 
@@ -145,12 +145,12 @@ namespace SimulationCore
                 for (int count = 0; count < proclist.Length; count++)
                 {
                     output.WriteLine("Process " + count);
-                    string line = "| ";
+                    string line = " ";
                     for (int counter = 0; counter < proclist[count].Statesequence.Count - 1; counter++)
                     {
                         for (int count3 = 0; count3 < proclist[count].Timesequence[counter]; count3++)
                         {
-                            line += proclist[count].Statesequence[counter] + " | ";
+                            line += proclist[count].Statesequence[counter] + " , ";
                         }
                     }
                     output.WriteLine(line);
