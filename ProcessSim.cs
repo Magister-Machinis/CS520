@@ -26,7 +26,9 @@ namespace SimulationCore
         public ProcessSim[] IOspace;
         public ProcessSim[] CPUspace;
 
+
         public double quantum;
+        public List<double> Quantlist;
 
         
 
@@ -39,7 +41,24 @@ namespace SimulationCore
             CPUspace[0] = null;
             IOspace[0] = null;
             quantum = 50;
+            Quantlist = new List<double>();
+            Quantlist.Add(quantum);
 
+        }
+
+        public double Quantavg(double runtime)
+        {
+            double temp = 0;
+            for(int count =0; count > Quantlist.Count-1;count++)
+            {
+                temp += Quantlist[count] / Quantlist.Count;
+            }
+            while(Quantlist.Count > 100)
+            {
+                Quantlist.RemoveAt(0);
+            }
+            Quantlist.Add(runtime);
+            return temp;
         }
 
     }
@@ -212,9 +231,10 @@ namespace SimulationCore
             sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 1.5) - 1))));
 
             bool getinline = false;
-            if(sleeptime > circuit.quantum)
+            double runtemp = circuit.Quantavg(sleeptime);
+            if(sleeptime > runtemp)
             {
-                sleeptime = circuit.quantum;
+                sleeptime = runtemp;
                 getinline = true;
             }
             if (sleeptime > (runlength-runtime))
