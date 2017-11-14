@@ -89,7 +89,7 @@ namespace GenericTools
 
             }
 
-        
+
         }
 
         void ListGenerator()
@@ -119,7 +119,7 @@ namespace GenericTools
             LastTime = temp;
             TimeList.Add(TimeDif);
             double avg = 0;
-            for (int count = 0; count < TimeList.Count; count++)
+            for (int count = 0; count < TimeList.Count - 1; count++)
             {
                 avg += TimeList[count] / TimeList.Count;
             }
@@ -127,7 +127,7 @@ namespace GenericTools
             {
                 TimeList.RemoveAt(0);
             }
-            
+
             return avg;
         }
 
@@ -216,8 +216,8 @@ namespace GenericTools
         double ExpoDis()
         {
 
-            seed = (-(1 / TimeAverage())  * Math.Log(LinearDis() / modulo))*100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
-            if(double.IsNaN(seed) | double.IsInfinity(seed)) //if values get too small for double, reinitialize from crypto library and carry on
+            seed = (-(1 / TimeAverage()) * Math.Log(LinearDis() / modulo)) * 100; //some typecasting bullshittery is needed to  get the Log() function to play nice with double typecasting
+            if (double.IsNaN(seed) | double.IsInfinity(seed)) //if values get too small for double, reinitialize from crypto library and carry on
             {
                 seed = this.ReallyRandom(true);
             }
@@ -284,7 +284,7 @@ namespace GenericTools
                 });
                 Pinglist.Add(Pinger);
                 Pinger.Start();
-                
+
 
                 if (count % 200 == 0)
                 {
@@ -292,17 +292,17 @@ namespace GenericTools
                     {
                         Console.WriteLine("Waiting on pings to finish up");
                     }
-                    for (int counter = 0; counter < Pinglist.Count; counter++)
+                    for (int counter = 0; counter < Pinglist.Count - 1; counter++)
                     {
                         Pinglist[counter].Join();
                     }
                     Pinglist.Clear();
-                    
+
                 }
                 count++;
 
             }
-            for (int counter = 0; counter < Pinglist.Count; counter++)
+            for (int counter = 0; counter < Pinglist.Count - 1; counter++)
             {
                 Pinglist[counter].Join();
             }

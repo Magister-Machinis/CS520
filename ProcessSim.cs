@@ -180,7 +180,7 @@ namespace SimulationCore
             circuit.CPUspace[0] = this;
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue
             this.currentqueue = "CPU";
-            double sleeptime = expotool.ReallyRandom();
+            double sleeptime = Math.Ceiling(expotool.ReallyRandom());
             
             int sleeptime2;
             
