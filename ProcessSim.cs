@@ -128,10 +128,7 @@ namespace SimulationCore
         void ReadyandCPU(Circuit circuit, Toolkit expotool)
         {
             circuit.Readyqueue.Add(this);
-            while(circuit.Readyqueue.Count == 0)
-            {
-                Thread.Sleep(1);
-            }
+            
             this.currentqueue = "Ready";
             Console.WriteLine("Process " + this.identnum + " is entering Ready queue");
             while(circuit.Readyqueue[0].identnum != this.identnum)
