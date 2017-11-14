@@ -141,6 +141,20 @@ namespace SimulationCore
                     cpucount += proclist[count].cpuuse;
 
                 }
+
+                for (int count = 0; count < proclist.Length; count++)
+                {
+                    output.WriteLine("Process " + count);
+                    string line = "| ";
+                    for (int counter = 0; counter < proclist[count].Statesequence.Count - 1; counter++)
+                    {
+                        for (int count3 = 0; count3 < proclist[count].Timesequence[counter]; count3++)
+                        {
+                            line += proclist[count].Statesequence[counter] + " | ";
+                        }
+                    }
+                    output.WriteLine(line);
+                }
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);
                 output.WriteLine("Average turnaround is: " + turnarounds);

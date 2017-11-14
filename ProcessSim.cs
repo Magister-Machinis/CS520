@@ -47,6 +47,10 @@ namespace SimulationCore
         public double waittime;
         public double cpuuse;
         public Toolkit ExpoTool;
+
+        public List<string> Statesequence;
+        public List<int> Timesequence;
+
         public ProcessSim(double runlenght, Toolkit expoTool)
         {
             incrit = false;
@@ -59,6 +63,9 @@ namespace SimulationCore
             runtime = 0;
             waittime = 0;
             cpuuse = 0;
+
+            Statesequence = new List<string>();
+            Timesequence = new List<int>();
         }
 
         public void Driver(Circuit circuit, Controller controller)
@@ -95,12 +102,14 @@ namespace SimulationCore
             //    Thread.Sleep(1);
             //}
             this.currentqueue = "IO Queue";
+            int counter = 0;
             Console.WriteLine("Process " + this.identnum + " entering io queue");
             
             while (circuit.IOqueue[0].identnum != this.identnum) //waiting in line on IO queue
             {
                 Thread.Sleep(1);
                 this.waittime++;
+                counter++;
             }
             bool cpucatch = false;
             while (cpucatch == false)
@@ -111,8 +120,11 @@ namespace SimulationCore
                     {
                         Thread.Sleep(1);
                         this.waittime++;
+                        counter++;
                     }
                     cpucatch = true;
+                    Timesequence.Add(counter);
+                    Statesequence.Add("IOQ");
                 }
                 catch
                 {
@@ -124,6 +136,8 @@ namespace SimulationCore
             this.currentqueue = "IO space";
             Console.WriteLine("Process " + this.identnum + " entering io space");
             Thread.Sleep(60);
+            Timesequence.Add(60);
+            Statesequence.Add("IOS");
             this.runtime += 60;
 
         
@@ -136,6 +150,7 @@ namespace SimulationCore
             //    Thread.Sleep(1);
             //}
             this.currentqueue = "Ready";
+            int counter = 0;
             Console.WriteLine("Process " + this.identnum + " is entering Ready queue");
             double smallnum = circuit.Readyqueue[0].runlength;
             while (smallnum != this.runlength) //waiting in line on ReadyQueue, checking to see if it is the smallest in the queue yet
@@ -156,7 +171,7 @@ namespace SimulationCore
                  
                 Thread.Sleep(1);
                 this.waittime++;
-                
+                counter++;
             }
 
             bool cpucatch = false;
@@ -168,8 +183,11 @@ namespace SimulationCore
                     {
                         Thread.Sleep(1);
                         this.waittime++;
+                        counter++;
                     }
                     cpucatch = true;
+                    Timesequence.Add(counter);
+                    Statesequence.Add("RDY");
                 }
                 catch
                 {
@@ -194,9 +212,10 @@ namespace SimulationCore
             }
             sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 2) - 1))));
             sleeptime2 = Convert.ToInt32(sleeptime);
-
+            Console.WriteLine("Process " + this.identnum + " entering cpu queue for " + sleeptime);
             Thread.Sleep(sleeptime2); //simulated usage of cpu, time spent is PRG according to exponential distribution, converted from double to int and modulo'd to prevent overflow errors
-            Console.WriteLine("Process " + this.identnum + " entering cpu queue for "+sleeptime);
+            Timesequence.Add(sleeptime2);
+            Statesequence.Add("CPU");
             runtime += sleeptime;
             cpuuse += sleeptime;
 
