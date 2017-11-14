@@ -119,7 +119,7 @@ namespace GenericTools
             LastTime = temp;
             TimeList.Add(TimeDif);
             double avg = 0;
-            for (int count = 0; count < TimeList.Count; count++)
+            for (int count = 0; count < TimeList.Count-1; count++)
             {
                 avg += TimeList[count] / TimeList.Count;
             }
@@ -292,7 +292,7 @@ namespace GenericTools
                     {
                         Console.WriteLine("Waiting on pings to finish up");
                     }
-                    for (int counter = 0; counter < Pinglist.Count; counter++)
+                    for (int counter = 0; counter < Pinglist.Count-1; counter++)
                     {
                         Pinglist[counter].Join();
                     }
@@ -302,7 +302,7 @@ namespace GenericTools
                 count++;
 
             }
-            for (int counter = 0; counter < Pinglist.Count; counter++)
+            for (int counter = 0; counter < Pinglist.Count-1; counter++)
             {
                 Pinglist[counter].Join();
             }
