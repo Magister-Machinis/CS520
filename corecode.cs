@@ -108,23 +108,14 @@ namespace SimulationCore
                     Thread.Sleep(1);
                 }
                 Stopwatch runtime = new Stopwatch();
-
+                runtime.Start();
                 output.WriteLine("Begining State record at  "+ DateTime.Now);
 
                 while (controller.getState() == true)
                 {
-                    //usecount++;
-                    //output.WriteLine(" ");
-                    //output.WriteLine("Current timestamp: " + DateTime.Now);
-                    //for (int count = 0; count < proclist.Length; count ++)
-                    //{
-                    //    if(proclist[count].currentqueue == "CPU")
-                    //    {
-                    //        cpucount++;
-                    //    }
-                    //    output.WriteLine("Process " + count + " is currently in " + proclist[count].currentqueue);
-                    //}
-                    //Thread.Sleep(5);
+                    
+                    
+                    Thread.Sleep(1);
                 }
                 output.WriteLine(" ");
                 
@@ -135,25 +126,26 @@ namespace SimulationCore
                 double turnarounds = 0;
                 for(int count = 0; count < proclist.Length; count++)
                 {
-                    if (count % 1000 == 0) //restricting state records to once a second or so
-                    {
-                        output.WriteLine("Process " + count);
-                        output.WriteLine("    Execution time is: " + proclist[count].runlength);
-                        output.WriteLine("    Wait time is " + proclist[count].waittime);
-                        output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
-                        output.WriteLine(" ");
+                    
+                    output.WriteLine("Process " + count);
+                    output.WriteLine("    Execution time is: " + proclist[count].runlength);
+                    output.WriteLine("    Wait time is " + proclist[count].waittime);
+                    output.WriteLine("    Turnaround time is " + (proclist[count].waittime + proclist[count].runlength));
+                    output.WriteLine("    Time spent in CPU is " + proclist[count].cpuuse);
+                    output.WriteLine(" ");
 
-                    }
+                    
                     runtimes += (proclist[count].runlength / proclist.Length);
                     waittimes += (proclist[count].waittime / proclist.Length);
                     turnarounds += ((proclist[count].runlength + proclist[count].waittime)/ proclist.Length);
                     cpucount += proclist[count].cpuuse;
-                    Thread.Sleep(1);
+                    
                 }
                 output.WriteLine("Average run time is: " + runtimes);
                 output.WriteLine("Average wait time is: " + waittimes);
                 output.WriteLine("Average turnaround is: " + turnarounds);
                 output.WriteLine("Simulation Time " + rundurationraw);
+                output.WriteLine("CPU utilization is " + (cpucount/(runtimes*proclist.Length)));
 
 
             }
