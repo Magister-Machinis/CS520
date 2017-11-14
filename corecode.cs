@@ -93,7 +93,7 @@ namespace SimulationCore
         string filepath;
         public Recorder()
         {
-            filepath = @".\output.txt";
+            filepath = @".\output.csv";
             filepath = Path.GetFullPath(filepath);
         }
 
