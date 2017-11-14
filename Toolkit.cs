@@ -1,5 +1,6 @@
 ﻿/* 
  * https://msdn.microsoft.com/en-us/library/hb7xxkfx(v=vs.110).aspx for pinging entropy gen 
+ * https://stackoverflow.com/questions/9386672/finding-the-number-of-places-after-the-decimal-point-of-a-double for handling pesky double decimals not converting to int
  */
 using System;
 using System.Collections.Generic;
@@ -221,7 +222,12 @@ namespace GenericTools
             {
                 seed = this.ReallyRandom(true);
             }
-
+            double precision = 1;
+            while ((decimal)seed * (decimal)Math.Pow(10, precision) != Math.Round((decimal)seed * (decimal)Math.Pow(10, precision))) precision++;
+            if (precision != 1)
+            {
+                seed *= (precision * 10);
+            }
             return seed;
 
         }
