@@ -110,9 +110,11 @@ namespace SimulationCore
                 bool RRcontrol = false;
                 do
                 {
-                    RRcontrol= ReadyandCPU(circuit, expotool); //loop back into ready queue if roundrobin control takes cpu away
+                    RRcontrol = false;
+                    RRcontrol = ReadyandCPU(circuit, expotool); //loop back into ready queue if roundrobin control takes cpu away
+                    circuit.CPUspace[0] = null;
                 } while (RRcontrol == true);
-                circuit.CPUspace[0] = null;
+                
                 if (runtime < runlength)
                 {
                     IOsequence(circuit, expotool);
