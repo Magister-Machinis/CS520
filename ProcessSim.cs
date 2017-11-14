@@ -190,7 +190,7 @@ namespace SimulationCore
             double sleeptime = expotool.ReallyRandom();
             
             int sleeptime2;
-            sleeptime = Convert.ToInt32(Math.Abs((sleeptime * 100 % ((Int32.MaxValue / 1.5) - 1))));
+            sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 1.5) - 1))));
 
             bool getinline = false;
             if(sleeptime > circuit.quantum)
