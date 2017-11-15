@@ -57,6 +57,12 @@ namespace SimulationCore
             {
                 Quantlist.RemoveAt(0);
             }
+            if(temp <100)
+            {
+                temp = 100;
+                Quantlist.Clear();
+                Quantlist.Add(100);
+            }
             Quantlist.Add(runtime);
             return temp;
         }
