@@ -70,7 +70,11 @@ namespace SimulationCore
             for (int count = 0; count < Proclist.Length; count++)
             {
                 Console.WriteLine("Waiting on process" + count);
-                threadlist[count].Join();
+                bool threader = false;
+                do
+                {
+                    threader = threadlist[count].Join(1000);
+                } while (threader == false);
             }
             controller.toggleState();
             recordthread.Join();
