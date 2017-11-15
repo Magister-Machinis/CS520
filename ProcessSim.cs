@@ -210,6 +210,7 @@ namespace SimulationCore
                 sleeptime = (runlength - runtime);
                 
             }
+            if (sleeptime == 0) sleeptime = 1;
             sleeptime = Convert.ToInt32(Math.Abs((sleeptime % ((Int32.MaxValue / 2) - 1))));
             sleeptime2 = Convert.ToInt32(sleeptime);
             Console.WriteLine("Process " + this.identnum + " entering cpu queue for " + sleeptime);

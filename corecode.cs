@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using GenericTools;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SimulationCore
 {
@@ -73,7 +74,8 @@ namespace SimulationCore
                 bool threader = false;
                 do
                 {
-                    threader = threadlist[count].Join(1000);
+                    threader = threadlist[count].Join(1);
+                    Task.Delay(1);
                 } while (threader == false);
             }
             controller.toggleState();
