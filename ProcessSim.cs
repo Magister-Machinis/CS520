@@ -112,7 +112,7 @@ namespace SimulationCore
                 counter++;
             }
             bool cpucatch = false;
-            while (cpucatch == false)
+            do
             {
                 try
                 {
@@ -130,7 +130,7 @@ namespace SimulationCore
                 {
                     cpucatch = false;
                 }
-            }
+            } while (cpucatch == false);
             circuit.IOspace[0] =this;
             circuit.IOqueue.Remove(this);
             this.currentqueue = "IO space";
@@ -175,7 +175,7 @@ namespace SimulationCore
             }
 
             bool cpucatch = false;
-            while (cpucatch == false)
+            do
             {
                 try
                 {
@@ -193,7 +193,7 @@ namespace SimulationCore
                 {
                     cpucatch = false;
                 }
-            }
+            } while (cpucatch == false);
 
             circuit.CPUspace[0] = this;
             circuit.Readyqueue.Remove(this); //transfering to cpu from ready queue

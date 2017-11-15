@@ -73,7 +73,7 @@ namespace GenericTools
                     incthread.Start();
                     Thread.Sleep(1);
                     TimeList = new List<double>();
-                    TimeList.Add(1);
+                    TimeList.Add(0.5);
                     LastTime = DateTime.Now;
                     seedthread.Join();
                     multhread.Join();
